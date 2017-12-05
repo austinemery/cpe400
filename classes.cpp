@@ -281,6 +281,16 @@
 	{
 
 	}
+	bool DroneObject::ableToReceivePackage( const int incomingSize )
+	{
+		if( (totalPackageSize + incomingSize) < 16 )
+		{
+			return true;
+		} else
+		{
+			return false;
+		}
+	}
 	/*
 	 * COMMAND & CONTROL
 	 */
@@ -336,7 +346,10 @@
 		while( droneAcceptableBatteryLife() )
 		{
 			//Check to make sure drones don't need to trade places.
+			for( int index = 0 ; index < totalFleetSize ; index++ )
+			{
 
+			}
 			//Node requests to communicate to neighbors
 				//re-establish all pathes
 
@@ -345,9 +358,11 @@
 					// Y/N
 				//Y: send package
 				//N: buffer package
+
+
+
+			//Update drones
 			
-
-
 		}
 	}
 	bool CCObject::droneAcceptableBatteryLife()
@@ -361,6 +376,16 @@
 		}
 
 		return true;
+	}
+	bool CCObject::needToSwap( const DroneObject& innerDrone, const DroneObject& outerDrone)
+	{
+		if(( innerDrone.getBattery() + outerDrone.getBattery() < 100 ) && (innerDrone.getBattery() > outerDrone.getBattery()))
+		{
+			return true;
+		} else
+		{
+			return false;
+		}
 	}
 	void CCObject::swapDronePosition( const int& goingRight, const int& goingLeft )
 	{

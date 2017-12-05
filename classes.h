@@ -67,7 +67,7 @@
 			int getRank();
 			int getLeftNeigbor();
 			int getRightNeighbor();
-
+			bool ableToReceivePackage( const int );
 			//Send info
 			bool sendPackage();
 			bool receivePackage();
@@ -114,6 +114,7 @@
 			bool receivePackage();
 
 			bool droneAcceptableBatteryLife();
+			bool needToSwap( const DroneObject& , const DroneObject& );
 			void proactiveSimulation();	//OLSR
 			void reactiveSimulation(); //AODV
 			void swapDronePosition( const int& , const int& );
