@@ -297,11 +297,11 @@
 	}
 
 	//Send info
-	bool DroneObject::sendPackage()
+	bool DroneObject::sendPackage( const int** events )
 	{
 
 	}
-	bool DroneObject::receivePackage()
+	bool DroneObject::receivePackage( const int** events )
 	{
 
 	}
@@ -322,9 +322,11 @@
 	{
 			totalFleetSize = numberOfDrones;
 			distanceBetweenDrones = 100 / numberOfDrones; 
-				//Keeping this an int in order to account for errors in drone positions
-			totalMessagesReceived = 0;
-
+				//Keeping this an int in order to account for errors in drone position
+			proactiveTotalMessagesReceived = 0;
+			reactiveTotalMessagesReceived = 0;
+			proactiveSimulationTime = 0;
+			reactiveSimulationTime = 0;
 			for( int index = 0 ; index < numberOfDrones ; index++ )
 			{
 				fleet.push_back( DroneObject( index , numberOfDrones ) );				
@@ -360,7 +362,7 @@
 
 	}
 
-	void CCObject::proactiveSimulation()
+	void CCObject::proactiveSimulation( const int** events )
 	{
 		//swapDronePosition( 0 , totalFleetSize-1 );
 
@@ -430,18 +432,26 @@
 			}
     	}
 	}
-	void CCObject::reactiveSimulation()
+	void CCObject::reactiveSimulation( const int** events )
 	{
 		//While the drones all have more than 10% of their battery.
 		while( droneAcceptableBatteryLife() )
 		{
 			//Check to make sure drones don't need to trade places.
-			for( int index = 0 ; index < totalFleetSize ; index++ )
+			for( int index = 0 , jndex =  totalFleetSize - 1; index < ( totalFleetSize / 2 ) ; index++ , jndex-- )
 			{
-
+				if ( needToSwap(fleet[index] , fleet[jndex] ) )
+				{
+					swapDronePosition( index , jndex );
+				}
 			}
+
 			//Node requests to communicate to neighbors
+			for( int index = totalFleetSize - 1 ; index >= 0 ; index-- )
+			{
 				//re-establish all pathes
+			}
+
 
 			//On message get
 				//can you receive a message?
@@ -452,7 +462,10 @@
 
 
 			//Update drones
-			
+			for( int index = 0 ; index < totalFleetSize ; index++ )
+			{
+				fleet[index].updateBattery(0);
+			}			
 		}
 	}
 	bool CCObject::droneAcceptableBatteryLife()
@@ -469,7 +482,7 @@
 	}
 	bool CCObject::needToSwap( DroneObject& innerDrone, DroneObject& outerDrone)
 	{
-		if(( innerDrone.getBattery() + outerDrone.getBattery() < 100 ) && (innerDrone.getBattery() > outerDrone.getBattery()))
+		if( ( innerDrone.getBattery() + outerDrone.getBattery() < 100 ) && ( innerDrone.getBattery() > outerDrone.getBattery() ) )
 		{
 			return true;
 		} 

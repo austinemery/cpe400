@@ -75,8 +75,8 @@
 			void setRightNeighborDistance(int);
 			bool ableToReceivePackage( const int );
 			//Send info
-			bool sendPackage();
-			bool receivePackage();
+			bool sendPackage( const int** events );
+			bool receivePackage( const int** events );
 
 			//Update
 			void updateBattery( const int& );
@@ -121,19 +121,26 @@
 
 			bool droneAcceptableBatteryLife();
 			bool needToSwap( DroneObject& , DroneObject& );
-			void proactiveSimulation();	//OLSR
-			void reactiveSimulation(); //AODV
+
+			void proactiveSimulation(  const int** events  );	//OLSR
+			void reactiveSimulation(  const int** events  ); //AODV
+
 			void swapDronePosition( const int& , const int& );
 			long long GetCurrentTimeMillis();			
 			unsigned int getDT();
 		private:
 			int totalFleetSize;
 			int distanceBetweenDrones;
-			int totalMessagesReceived;
+			
 			vector<DroneObject> fleet;
 			long long m_currentTimeMillis;
 			int** proactiveArray;
 
+
+			int proactiveTotalMessagesReceived;
+			int reactiveTotalMessagesReceived;
+			long long proactiveSimulationTime;
+			long long reactiveSimulationTime;
 		//friend class CCObject;
 	};
 //
