@@ -20,6 +20,8 @@
 //
 	#include <iostream>
 	#include <vector>
+	#include <sys/time.h>
+	#include <cassert>
   	using namespace std;
 //
 //
@@ -114,14 +116,15 @@
 			bool droneAcceptableBatteryLife();
 			void proactiveSimulation();	//OLSR
 			void reactiveSimulation(); //AODV
-
-
 			void swapDronePosition( const int& , const int& );
+			long long GetCurrentTimeMillis();			
+			unsigned int getDT();
 		private:
 			int totalFleetSize;
 			int distanceBetweenDrones;
 			int totalMessagesReceived;
 			vector<DroneObject> fleet;
+			long long m_currentTimeMillis;
 
 		//friend class CCObject;
 	};
