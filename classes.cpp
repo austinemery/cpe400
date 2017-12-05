@@ -144,29 +144,6 @@
 
 		}	
 	}
-	DroneObject& DroneObject::operator=(const DroneObject& rightHandSide )
-	{
-		if( &rightHandSide != this )
-		{
-			for( int row = 0 ; row < 2 ; row++ )
-			{
-				for( int col = 0 ; col < 3 ; col++ )
-				{
-					edges[row][col] = rightHandSide.edges[row][col];
-				}
-			}
-
-			package = rightHandSide.package;
-			indexOfLastPacket = rightHandSide.indexOfLastPacket;		
-			totalPackageSize = rightHandSide.totalPackageSize;
-			totalPackagesSent = rightHandSide.totalPackagesSent;
-			rankInFleet = rightHandSide.rankInFleet;
-			remainingBattery = rightHandSide.remainingBattery;
-			id = rightHandSide.id;
-		}
-
-		return *this;
-	}
 	DroneObject::~DroneObject()
 	{
 		id = -1;
@@ -193,14 +170,19 @@
 	}
 	int DroneObject::remainingPackageSpace()
 	{
-		return 16 - totalPackageSize; //The packages can only be 8 bytes long
+		return 16 - totalPackageSize; //The packages can only be 16 bytes long
+	}
+	int DroneObject::getTotalPackages()
+	{
+		return totalPackagesSent;
 	}
 	bool DroneObject::hasPackage()
 	{
 		if( package.empty() )
 		{
 			return false;
-		} else
+		} 
+		else
 		{
 			return true;
 		}
@@ -212,10 +194,6 @@
 	int DroneObject::getRank()
 	{
 		return rankInFleet;
-	}
-	int DroneObject::getTotalPackages()
-	{
-		return totalPackagesSent;
 	}
 	int DroneObject::getLeftNeighbor()
 	{
@@ -249,6 +227,30 @@
 	{
 		edges[1][2] = distance;
 	}
+	//Send info
+	bool DroneObject::ableToReceivePackage( const int incomingSize )
+	{
+		/*
+		if( (totalPackageSize + incomingSize) < 16 )
+		{
+			return true;
+		} 
+		else
+		{
+			return false;
+		}
+		*/
+		return (remainingPackageSpace() > 0);
+	}
+	bool DroneObject::sendPackage( const int** events )
+	{
+
+	}
+	bool DroneObject::receivePackage( const int** events )
+	{
+
+	}
+
 	//Update
 	void DroneObject::updateBattery( const int& situation )
 	{
@@ -296,24 +298,29 @@
 		edges[1][neighbor] = newDistance;
 	}
 
-	//Send info
-	bool DroneObject::sendPackage( const int** events )
+	//operator
+	DroneObject& DroneObject::operator=(const DroneObject& rightHandSide )
 	{
-
-	}
-	bool DroneObject::receivePackage( const int** events )
-	{
-
-	}
-	bool DroneObject::ableToReceivePackage( const int incomingSize )
-	{
-		if( (totalPackageSize + incomingSize) < 16 )
+		if( &rightHandSide != this )
 		{
-			return true;
-		} else
-		{
-			return false;
+			for( int row = 0 ; row < 2 ; row++ )
+			{
+				for( int col = 0 ; col < 3 ; col++ )
+				{
+					edges[row][col] = rightHandSide.edges[row][col];
+				}
+			}
+
+			package = rightHandSide.package;
+			indexOfLastPacket = rightHandSide.indexOfLastPacket;		
+			totalPackageSize = rightHandSide.totalPackageSize;
+			totalPackagesSent = rightHandSide.totalPackagesSent;
+			rankInFleet = rightHandSide.rankInFleet;
+			remainingBattery = rightHandSide.remainingBattery;
+			id = rightHandSide.id;
 		}
+
+		return *this;
 	}
 	/*
 	 * COMMAND & CONTROL
@@ -364,8 +371,6 @@
 
 	void CCObject::proactiveSimulation( const int** events )
 	{
-		//swapDronePosition( 0 , totalFleetSize-1 );
-
 		//Dynamic array that stores information on the whole graph. If the drones can see eachother, the distance will be in the index
 		proactiveArray = new int*[totalFleetSize];
 		for(int index = 0; index < totalFleetSize; index++)
@@ -532,7 +537,7 @@
 	  return DeltaTimeMillis;
 	}
 
-	long long CCObject::GetCurrentTimeMillis()
+	long long CCObject::getCurrentTimeMillis()
 	{
 	  timeval t;
 	  gettimeofday(&t, NULL);
