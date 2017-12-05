@@ -77,6 +77,7 @@
 			//Operators
 			DroneObject& operator=(const DroneObject&);
 		private:
+			//create a buffer of 8
 			int edges[2][3];			
 							//@ most: A drone will have three edges as this is a Fire Brigade Formation
 								//And all will have a connection to C&C
@@ -110,8 +111,9 @@
 			int broadcast();
 			bool receivePackage();
 
-			void proactiveSimulation();
-			void reactiveSimulation();
+			bool droneAcceptableBatteryLife();
+			void proactiveSimulation();	//OLSR
+			void reactiveSimulation(); //AODV
 
 
 			void swapDronePosition( const int& , const int& );

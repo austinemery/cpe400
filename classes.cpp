@@ -195,7 +195,7 @@
 	}
 	int DroneObject::remainingPackageSpace()
 	{
-		return 8 - totalPackageSize; //The packages can only be 8 bytes long
+		return 16 - totalPackageSize; //The packages can only be 8 bytes long
 	}
 	bool DroneObject::hasPackage()
 	{
@@ -334,9 +334,26 @@
 	}
 	void CCObject::reactiveSimulation()
 	{
+		//While the drones all have more than 10% of their battery.
+		while( droneAcceptableBatteryLife() )
+		{
+			//Check to make sure drones don't need to trade places.
 
+			//
+		}
 	}
+	bool CCObject::droneAcceptableBatteryLife()
+	{
+		for( int index = 0 ; index < totalFleetSize ; index++ )
+		{
+			if( fleet.getBattery() < 10.0 )	//This amount is subject to change.
+			{
+				return false;
+			}
+		}
 
+		return true;
+	}
 	void CCObject::swapDronePosition( const int& goingRight, const int& goingLeft )
 	{
 		DroneObject holding;
