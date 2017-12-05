@@ -29,32 +29,16 @@
 	 * PACKET
 	 */
  	
- 	/**
-	  *@brief 
-	  *
-	  *@details 
-	  *
-	  *@pre 
-	  *
-	  *@post 
-	  *
-	  *@par 
-	  *
-	  *@exception None
-	  *
-	  *@return None
-	  *
-	  *@return None
-	  *
-	  *@note None
-	  *
-	  *@param[in] None
-	  *
-	  *@param[out] None
-	  */
-	PacketObject::PacketObject( const int& size, const int& incomingMessage )
+	PacketObject::PacketObject( const int& incomingMessage )
 	{
-		byteSize = size;
+		if( incomingMessage <= 6 )
+		{
+			byteSize = 2;
+		} else
+		{
+			byteSize = 4;
+		}
+
 		message = incomingMessage;
 	}
 
@@ -219,6 +203,10 @@
 	{
 		edges[1][0] = distance;
 	}
+	int DroneObject::getWeight()
+	{
+		return personalWeight;
+	}
 	void DroneObject::setLeftNeighborDistance(int distance)
 	{
 		edges[1][1] = distance;
@@ -284,10 +272,12 @@
 					break;
 			case 4: // 4: Traded positions with counterpart
 
-					remainingBattery -= 15;
+					remainingBattery -= 5;
 						//Battery is drained 5% for tradiing information with counterpart on cross over
 						//Battery is drained 10% for relocation
-					break;				
+					break;
+			case 5: //5: Received request message from another drone for updated information.
+					remainingBattery -= 0.05;				
 		}
 	}
 	void DroneObject::updateEdgeDistance( const int& neighbor, const int& newDistance )
@@ -339,6 +329,11 @@
 				fleet.push_back( DroneObject( index , numberOfDrones ) );				
 			}
 
+			for( int index = 0 ; index < numberOfDrones ; index++ )
+			{
+				fleet[index].personalWeight = distanceBetweenDrones;
+			}
+
 	}
 	CCObject::~CCObject()
 	{
@@ -369,7 +364,7 @@
 
 	}
 
-	void CCObject::proactiveSimulation( const int** events )
+	void CCObject::proactiveSimulation( const int events[][2] )
 	{
 		//Dynamic array that stores information on the whole graph. If the drones can see eachother, the distance will be in the index
 		proactiveArray = new int*[totalFleetSize];
@@ -437,8 +432,10 @@
 			}
     	}
 	}
-	void CCObject::reactiveSimulation( const int** events )
+	void CCObject::reactiveSimulation( const int events[][2] )
 	{
+		int eventIndex = 0;
+
 		//While the drones all have more than 10% of their battery.
 		while( droneAcceptableBatteryLife() )
 		{
@@ -451,19 +448,80 @@
 				}
 			}
 
-			//Node requests to communicate to neighbors
-			for( int index = totalFleetSize - 1 ; index >= 0 ; index-- )
-			{
+				/*
+				 *
+				 * RECEIVED A MESSAGE
+				 *
+				 */
+				int droneReceiving = events[eventIndex][0];
+				PacketObject newEvent(events[eventIndex][1]);
 				//re-establish all pathes
-			}
+				if( droneReceiving == totalFleetSize - 1 )
+				{
+					//there is no right neighbor to grab
+					fleet[droneReceiving].setLeftNeighborDistance( fleet[droneReceiving-1].getWeight() );
+						//This is 
+								//sending a message to determine distance
+								//receiving message with the distance
+								//on part of both drones.
+					fleet[droneReceiving].updateBattery(5);
+					fleet[droneReceiving].updateBattery(2);
+					fleet[droneReceiving-1].updateBattery(5);
+					fleet[droneReceiving-1].updateBattery(2);
+				} else if( droneReceiving == 0 )
+				{
+					//there is no left neighbor to grab
+					fleet[droneReceiving].setRightNeighborDistance( fleet[droneReceiving+1].getWeight() );
+
+					//Update Battery
+					fleet[droneReceiving].updateBattery(5);
+					fleet[droneReceiving].updateBattery(2);
+					fleet[droneReceiving + 1].updateBattery(5);
+					fleet[droneReceiving + 1].updateBattery(2);
+				} else
+				{
+					//Left Neighbor
+					fleet[droneReceiving].setLeftNeighborDistance( fleet[droneReceiving-1].getWeight() );
+					//Update Battery
+					fleet[droneReceiving].updateBattery(5);
+					fleet[droneReceiving].updateBattery(2);
+					fleet[droneReceiving-1].updateBattery(5);
+					fleet[droneReceiving-1].updateBattery(2);				
+
+					//Right Neighbor
+					fleet[droneReceiving].setRightNeighborDistance( fleet[droneReceiving+1].getWeight() );
+					//Update Battery
+					fleet[droneReceiving].updateBattery(5);
+					fleet[droneReceiving].updateBattery(2);
+					fleet[droneReceiving + 1].updateBattery(5);
+					fleet[droneReceiving + 1].updateBattery(2);
+				}
 
 
 			//On message get
-				//can you receive a message?
-					// Y/N
-				//Y: send package
-				//N: buffer package
+			//can you receive a message?
+			if( fleet[droneReceiving].getRank() != 0 )
+			{
+				if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
+				{
+					//Y: send package
+				}
+				else
+				{
+					//N: buffer package				
+				}
+				// Update drones battery
+				fleet[droneReceiving].updateBattery(5);
+				fleet[droneReceiving].updateBattery(2);
+				fleet[droneReceiving-1].updateBattery(5);
+				fleet[droneReceiving-1].updateBattery(2);
+			} 
+			else
+			{
+				//send package to CC
 
+				fleet[droneReceiving].updateBattery(2);
+			}
 
 
 			//Update drones
@@ -471,6 +529,13 @@
 			{
 				fleet[index].updateBattery(0);
 			}			
+
+			eventIndex++;
+			if(eventIndex == 1000)
+			{
+				break;
+			}		
+
 		}
 	}
 	bool CCObject::droneAcceptableBatteryLife()

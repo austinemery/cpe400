@@ -40,7 +40,7 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones );
 
 		ComCon.printFleet();
 
-		ComCon.proactiveSimulation( simulatedEvents );
+		ComCon.reactiveSimulation( simulatedEvents );
 
 		ComCon.printFleet();
 

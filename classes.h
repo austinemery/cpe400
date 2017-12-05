@@ -40,7 +40,7 @@
 			  *		
 			  */
 			//
-			PacketObject( const int& , const int& );
+			PacketObject( const int& );
 			/**
 			  *@name ~PacketObject
 			  *
@@ -191,6 +191,7 @@
 			  */
 			//
 			void setCCDistance(int);
+			int getWeight();
 			/**
 			  *@name setLeftNeighborDistance
 			  *
@@ -269,7 +270,7 @@
 			int rankInFleet;
 			float remainingBattery;
 			int id;
-
+			int personalWeight;
 
 		friend class CCObject;
 	};
@@ -329,7 +330,7 @@
 			  *
 			  */
 			//
-			void proactiveSimulation(  const int** events  );
+			void proactiveSimulation(  const int events[][2]  );
 			/**
 			  *@name reactiveSimulation
 			  *
@@ -337,7 +338,7 @@
 			  *		
 			  */
 			//
-			void reactiveSimulation(  const int** events  );
+			void reactiveSimulation(  const int events[][2]  );
 			/**
 			  *@name droneAcceptableBatteryLife
 			  *
