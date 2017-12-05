@@ -125,6 +125,7 @@
 			int totalMessagesReceived;
 			vector<DroneObject> fleet;
 			long long m_currentTimeMillis;
+			int** proactiveArray;
 
 		//friend class CCObject;
 	};

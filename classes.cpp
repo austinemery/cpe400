@@ -315,6 +315,9 @@
 			cout << "Left Neighbor: " << fleet[index].getLeftNeigbor() << endl;
 			cout << "Right Neighbor: " << fleet[index].getRightNeighbor() << endl;
 			cout << endl;
+
+			getDT();
+			cout << m_currentTimeMillis << endl;
 		}
 	}
 	int CCObject::broadcast()
@@ -328,7 +331,21 @@
 
 	void CCObject::proactiveSimulation()
 	{
-		swapDronePosition( 0 , totalFleetSize-1 );
+		//swapDronePosition( 0 , totalFleetSize-1 );
+
+		//Dynamic array that stores information on the whole graph. If the drones can see eachother, the distance will be in the index
+		proactiveArray = new int*[totalFleetSize];
+		for(int index = 0; index < totalFleetSize; index++)
+		{
+    		proactiveArray[index] = new int[totalFleetSize];
+		}
+
+		
+
+    	while( droneAcceptableBatteryLife() )
+    	{
+
+    	}
 	}
 	void CCObject::reactiveSimulation()
 	{
