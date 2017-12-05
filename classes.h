@@ -34,7 +34,7 @@
 	{
 		public:
 			//Contructors and Destructors
-			PacketObject( const int& , const int& );
+			PacketObject( const int& );
 			~PacketObject();
 
 			//Get info
@@ -70,6 +70,7 @@
 			int getLeftNeighborDistance();
 			int getRightNeighborDistance();
 			int getCCDistance();
+			int getWeight();
 			void setCCDistance(int);
 			void setLeftNeighborDistance(int);
 			void setRightNeighborDistance(int);
@@ -98,7 +99,7 @@
 			int rankInFleet;
 			float remainingBattery;
 			int id;
-
+			int personalWeight;
 
 		friend class CCObject;
 	};
@@ -122,8 +123,8 @@
 			bool droneAcceptableBatteryLife();
 			bool needToSwap( DroneObject& , DroneObject& );
 
-			void proactiveSimulation(  const int** events  );	//OLSR
-			void reactiveSimulation(  const int** events  ); //AODV
+			void proactiveSimulation(  const int events[][2]  );	//OLSR
+			void reactiveSimulation(  const int events[][2]  ); //AODV
 
 			void swapDronePosition( const int& , const int& );
 			long long GetCurrentTimeMillis();			
