@@ -30,6 +30,11 @@
 	/*
 	 * PACKET
 	 */
+	class PacketObject;
+	class DroneObject;
+	class CCObject;
+
+
 	class PacketObject
 	{
 		public:
@@ -256,6 +261,14 @@
 			  */
 			//
 			void collectPackage(PacketObject&);
+			/**
+			  *@name ccPackage
+			  *
+			  *@brief Sends an 8byte package to the CCObject.
+			  *		
+			  */
+			//
+			void ccPackage(CCObject&, int);
 
 
 			/**
@@ -332,7 +345,7 @@
 			  *		
 			  */
 			//
-			bool receivePackage();
+			bool receivePackage(int);
 			/**
 			  *@name proactiveSimulation
 			  *

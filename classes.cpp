@@ -313,6 +313,17 @@
 		totalPackageSize += object.getSize();
 	}
 
+	void DroneObject::ccPackage(CCObject& home, int choice)
+	{
+		int packageSize = 0;
+		while(packageSize < 8)
+		{
+			packageSize += package[0].getSize();
+			home.receivePackage(choice);
+			package.erase(package.begin());
+		}
+	}
+
 	//operator
 	DroneObject& DroneObject::operator=(const DroneObject& rightHandSide )
 	{
@@ -403,9 +414,21 @@
 	{
 
 	}
-	bool CCObject::receivePackage()
+	bool CCObject::receivePackage(int choice)
 	{
-
+		if( choice == 1 )
+		{
+			proactiveTotalMessagesReceived[currentSimulationIndex]++;
+		}
+		else if( choice == 2 )
+		{
+			reactiveTotalMessagesReceived[currentSimulationIndex]++;
+		}
+		else
+		{
+			return false;
+		}
+		return true;
 	}
 
 	void CCObject::proactiveSimulation( const int events[][2] )
@@ -509,6 +532,7 @@
 				 */
 				int droneReceiving = events[eventIndex][0];
 				PacketObject newEvent(events[eventIndex][1]);
+				fleet[droneReceiving].collectPackage(newEvent);
 				//re-establish all pathes
 				if( droneReceiving == totalFleetSize - 1 )
 				{
@@ -573,7 +597,7 @@
 			} 
 			else
 			{
-				//send package to CC
+				//fleet[droneReceiving].ccPackage(*this, 1); //1 for proactive, 2 for reactive
 
 				fleet[droneReceiving].updateBattery(2);
 			}
