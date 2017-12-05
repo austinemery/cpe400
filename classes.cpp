@@ -229,7 +229,7 @@
 			return false;
 		}
 		*/
-		return (remainingPackageSpace() > 0);
+		return (remainingPackageSpace() > 8);
 	}
 	bool DroneObject::sendPackage( const int** events )
 	{
