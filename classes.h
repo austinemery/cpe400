@@ -385,7 +385,7 @@
 			//
 			long long getCurrentTimeMillis();
 
-			void resetSimulation();
+			void resetSimulation( int );
 			void incrementSimulationIndex();
 			void totalSimulationSummary();
 		private:
@@ -402,6 +402,12 @@
 			int reactiveTotalMessagesReceived[100];
 			long long proactiveSimulationTime[100];
 			long long reactiveSimulationTime[100];
+			float proactiveMinBatteryLife[100];
+			float reactiveMinBatteryLife[100];
+			float proactiveMaxBatteryLife[100];
+			float reactiveMaxBatteryLife[100];
+			float proactiveAvgBatteryLife[100];
+			float reactiveAvgBatteryLife[100];
 		//friend class CCObject;
 	};
 //

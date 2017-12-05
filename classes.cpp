@@ -341,6 +341,13 @@
 				reactiveTotalMessagesReceived[index] = 0;
 				proactiveSimulationTime[index] = 0;
 				reactiveSimulationTime[index] = 0;
+				proactiveMinBatteryLife[index] = 0;
+				reactiveMinBatteryLife[index] = 0;
+				proactiveMaxBatteryLife[index] = 0;
+				reactiveMaxBatteryLife[index] = 0;
+				proactiveAvgBatteryLife[index] = 0;
+				reactiveAvgBatteryLife[index] = 0;
+
 			}
 
 
@@ -638,8 +645,50 @@
 	  long long ret = t.tv_sec * 1000 + t.tv_usec / 1000;
 	  return ret;
 	}
-	void CCObject::resetSimulation()
+	void CCObject::resetSimulation( int simCase )
 	{
+		//case == 1: Proactive
+		//case == 2: Reactive
+
+		int minValue = 100;
+		int maxValue = 0;
+
+		for( int index = 0 ; index < totalFleetSize ; index++ )
+		{
+			if( fleet[index].getBattery() < minValue )
+			{
+				minValue = fleet[index].getBattery();
+			}
+
+			if(fleet[index].getBattery() > maxValue )
+			{
+				maxValue = fleet[index].getBattery();
+			}
+
+			if( simCase == 1 )
+			{
+				proactiveAvgBatteryLife[currentSimulationIndex] += fleet[index].getBattery();
+			} 
+			else
+			{
+				reactiveAvgBatteryLife[currentSimulationIndex] += fleet[index].getBattery();
+			}
+		}
+
+		if( simCase == 1 )
+		{
+			proactiveMinBatteryLife[currentSimulationIndex] = minValue;
+
+			proactiveMaxBatteryLife[currentSimulationIndex] = maxValue;			
+		}
+		else
+		{
+			reactiveMinBatteryLife[currentSimulationIndex] = minValue;
+
+			reactiveMaxBatteryLife[currentSimulationIndex] = maxValue;	
+		}
+
+
 		//Reset the drones for the next trial.
 		fleet.clear();
 
@@ -662,8 +711,17 @@
 		double avgProactivePacket = 0;
 		double avgReactivePacket = 0;
 
-		double double avgProactiveSimulationTime = 0;
-		double double avgReactiveSimulationTime = 0;
+		double avgProactiveMinValue = 0;
+		double avgReactiveMinValue = 0;
+
+		double avgProactiveMaxValue = 0;
+		double avgReactiveMaxValue = 0;
+
+		double avgProactiveAvgValue = 0;
+		double avgReactiveAvgValue = 0;
+
+		double avgProactiveSimulationTime = 0;
+		double avgReactiveSimulationTime = 0;
 
 		for( int index = 0 ; index < 1000 ; index++ )
 		{
@@ -672,7 +730,17 @@
 
 			avgProactiveSimulationTime += proactiveSimulationTime[index];
 			avgReactiveSimulationTime += reactiveSimulationTime[index];
+
+			avgProactiveMinValue += proactiveMinBatteryLife[index];
+			avgReactiveMinValue += reactiveMinBatteryLife[index];
+
+			avgProactiveMaxValue += proactiveMaxBatteryLife[index];
+			avgReactiveMaxValue += reactiveMaxBatteryLife[index];
+
+			avgProactiveAvgValue += proactiveAvgBatteryLife[index];
+			avgReactiveAvgValue += reactiveAvgBatteryLife[index];
 		}
+
 
 
 		//Print it all out
