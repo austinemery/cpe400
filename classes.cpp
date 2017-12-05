@@ -217,13 +217,37 @@
 	{
 		return totalPackagesSent;
 	}
-	int DroneObject::getLeftNeigbor()
+	int DroneObject::getLeftNeighbor()
 	{
 		return edges[0][1];
 	}
 	int DroneObject::getRightNeighbor()
 	{
 		return edges[0][2];
+	}
+	int DroneObject::getLeftNeighborDistance()
+	{
+		return edges[1][1];
+	}
+	int DroneObject::getRightNeighborDistance()
+	{
+		return edges[1][2];
+	}
+	int DroneObject::getCCDistance()
+	{
+		return edges[1][0];
+	}
+	void DroneObject::setCCDistance(int distance)
+	{
+		edges[1][0] = distance;
+	}
+	void DroneObject::setLeftNeighborDistance(int distance)
+	{
+		edges[1][1] = distance;
+	}
+	void DroneObject::setRightNeighborDistance(int distance)
+	{
+		edges[1][2] = distance;
 	}
 	//Update
 	void DroneObject::updateBattery( const int& situation )
@@ -324,9 +348,12 @@
 			cout << "ID: " << fleet[index].getID() << endl;
 			cout << "Battery Life: " << fleet[index].getBattery() << endl;
 			cout << "Total Packages Sent: " << fleet[index].getTotalPackages() << endl;
-			cout << "Left Neighbor: " << fleet[index].getLeftNeigbor() << endl;
+			cout << "Left Neighbor: " << fleet[index].getLeftNeighbor() << endl;
 			cout << "Right Neighbor: " << fleet[index].getRightNeighbor() << endl;
 			cout << endl;
+
+			getDT();
+			cout << m_currentTimeMillis << endl;
 		}
 	}
 	int CCObject::broadcast()
@@ -340,7 +367,63 @@
 
 	void CCObject::proactiveSimulation( const int** events )
 	{
-		swapDronePosition( 0 , totalFleetSize-1 );
+		//swapDronePosition( 0 , totalFleetSize-1 );
+
+		//Dynamic array that stores information on the whole graph. If the drones can see eachother, the distance will be in the index
+		proactiveArray = new int*[totalFleetSize];
+		for(int index = 0; index < totalFleetSize; index++)
+		{
+    		proactiveArray[index] = new int[totalFleetSize];
+		}
+
+		for (int index = 0; index < totalFleetSize; index++)
+		{
+			//the inner drone
+			if (index == 0)
+			{
+				proactiveArray[index][fleet[index].getRightNeighbor()] = fleet[index].getRightNeighborDistance();
+			}
+			//the outer drone
+			else if(index == totalFleetSize - 1)
+			{
+				proactiveArray[index][fleet[index].getLeftNeighbor()] = fleet[index].getLeftNeighborDistance();
+			}
+			//the rest of the drones
+			else
+			{
+				proactiveArray[index][fleet[index].getRightNeighbor()] = fleet[index].getRightNeighborDistance();
+				proactiveArray[index][fleet[index].getLeftNeighbor()] = fleet[index].getLeftNeighborDistance();
+			}
+		}
+
+		for (int index = 0; index < totalFleetSize; ++index)
+		{
+			for (int jindex = 0; jindex < totalFleetSize; ++jindex)
+			{
+				cout << proactiveArray[index][jindex] << ' ';
+			}
+			cout << endl;
+		}
+
+    	while( droneAcceptableBatteryLife() )
+    	{
+    		//Node requests to communicate to neighbors
+				//re-establish all pathes
+
+			//On message get
+				//can you receive a message?
+					// Y/N
+				//Y: send package
+				//N: buffer package
+
+
+
+			//Update drones
+			for (int index = 0; index < totalFleetSize; index++)
+			{
+				fleet[index].updateBattery(0);
+			}
+    	}
 	}
 	void CCObject::reactiveSimulation( const int** events )
 	{
@@ -395,7 +478,8 @@
 		if( ( innerDrone.getBattery() + outerDrone.getBattery() < 100 ) && ( innerDrone.getBattery() > outerDrone.getBattery() ) )
 		{
 			return true;
-		} else
+		} 
+		else
 		{
 			return false;
 		}

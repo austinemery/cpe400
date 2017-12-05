@@ -65,8 +65,14 @@
 			bool hasPackage();
 			int getID();
 			int getRank();
-			int getLeftNeigbor();
+			int getLeftNeighbor();
 			int getRightNeighbor();
+			int getLeftNeighborDistance();
+			int getRightNeighborDistance();
+			int getCCDistance();
+			void setCCDistance(int);
+			void setLeftNeighborDistance(int);
+			void setRightNeighborDistance(int);
 			bool ableToReceivePackage( const int );
 			//Send info
 			bool sendPackage( const int** events );
@@ -115,8 +121,10 @@
 
 			bool droneAcceptableBatteryLife();
 			bool needToSwap( DroneObject& , DroneObject& );
+
 			void proactiveSimulation(  const int** events  );	//OLSR
 			void reactiveSimulation(  const int** events  ); //AODV
+
 			void swapDronePosition( const int& , const int& );
 			long long GetCurrentTimeMillis();			
 			unsigned int getDT();
@@ -126,6 +134,7 @@
 			
 			vector<DroneObject> fleet;
 			long long m_currentTimeMillis;
+			int** proactiveArray;
 
 
 			int proactiveTotalMessagesReceived;
