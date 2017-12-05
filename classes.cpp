@@ -67,8 +67,9 @@
 		indexOfLastPacket = -1;
 		totalPackageSize = 0;
 		totalPackagesSent = 0;
-		remainingBattery = 100;
+		remainingBattery = 100 - positionInFleet;
 		rankInFleet = positionInFleet;
+		fleetTotal = totalInFleet;
 
 		if( totalInFleet == 0 )		//This drone is not connected to anyone
 		{
@@ -246,7 +247,7 @@
 		{
 			case 0: // 0: A cycle has gone by, account for battery life drain
 					
-					remainingBattery--;
+					remainingBattery -= getCCDistance() * .01;
 						//Battery is drained by 1% for idle movement through air
 					break;
 			case 1: // 1: A message has been received
@@ -271,11 +272,20 @@
 						//Every foot a message is sent takes 0.1 off the battery.
 					break;
 			case 4: // 4: Traded positions with counterpart
-
-					remainingBattery -= 5;
-						//Battery is drained 5% for tradiing information with counterpart on cross over
-						//Battery is drained 10% for relocation
-					break;
+					if((rankInFleet == fleetTotal/2) || (rankInFleet == (fleetTotal/2 + 1)))
+					{
+						remainingBattery -= 6;
+					}
+					else if(rankInFleet < (fleetTotal/2))
+					{
+						remainingBattery -= 5 + (fleetTotal - (rankInFleet * 2));
+					}
+					else
+					{
+						remainingBattery -= 5 + (fleetTotal - ((fleetTotal - rankInFleet) * 2));
+					}
+					//includes battery for data sent to swap(5%) and the distance traveled(at least 3%)	
+					break;				
 			case 5: //5: Received request message from another drone for updated information.
 					remainingBattery -= 0.05;				
 		}
@@ -552,6 +562,10 @@
 	}
 	bool CCObject::needToSwap( DroneObject& innerDrone, DroneObject& outerDrone)
 	{
+		if(innerDrone.rankInFleet == outerDrone.rankInFleet)
+		{
+			return false;
+		}
 		if( ( innerDrone.getBattery() + outerDrone.getBattery() < 100 ) && ( innerDrone.getBattery() > outerDrone.getBattery() ) )
 		{
 			return true;

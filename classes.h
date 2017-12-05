@@ -270,7 +270,9 @@
 			int rankInFleet;
 			float remainingBattery;
 			int id;
+			int fleetTotal;
 			int personalWeight;
+
 
 		friend class CCObject;
 	};
