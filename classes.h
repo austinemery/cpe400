@@ -98,6 +98,7 @@
 			int rankInFleet;
 			float remainingBattery;
 			int id;
+			int fleetTotal;
 
 
 		friend class CCObject;
@@ -128,6 +129,9 @@
 			void swapDronePosition( const int& , const int& );
 			long long GetCurrentTimeMillis();			
 			unsigned int getDT();
+
+			int getTotalFleetSize();
+
 		private:
 			int totalFleetSize;
 			int distanceBetweenDrones;
