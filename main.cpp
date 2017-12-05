@@ -42,18 +42,20 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones );
 				//NO NOT EDIT ONCE CREATED.
 		CCObject ComCon(amountOfDrones);
 
-		// for( int index = 0 ; index < 100 ; index++ )
-		// {
-		// 	populateEvents(simulatedEvents , amountOfDrones);
+		for( int index = 0 ; index < 100 ; index++ )
+		{
+			populateEvents(simulatedEvents , amountOfDrones);
 
-		// 	ComCon.reactiveSimulation( simulatedEvents );
+			ComCon.proactiveSimulation( simulatedEvents );
 
-		// 	ComCon.resetSimulation();
+			ComCon.resetSimulation( 1 );
 
-		// 	ComCon.proactiveSimulation( simulatedEvents );
+			ComCon.reactiveSimulation( simulatedEvents );
 
-		// 	ComCon.incrementSimulationIndex();
-		// }
+			ComCon.resetSimulation( 2 );
+
+			ComCon.incrementSimulationIndex();
+		}
 
 		ComCon.totalSimulationSummary();
 
