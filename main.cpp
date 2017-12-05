@@ -40,7 +40,7 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones );
 
 		ComCon.printFleet();
 
-		ComCon.proactiveSimulation();
+		ComCon.proactiveSimulation( simulatedEvents );
 
 		ComCon.printFleet();
 
@@ -57,10 +57,10 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones )
 	for( int row = 0 ; row < 1000 ; row++ )
 	{
 		if(row % 5 == 0)
-			while(choice !> (.6 * amountOfDrones) )
+			while(choice <= (.6 * amountOfDrones) )
 				choice = rand() % amountOfDrones;
 		else if(row % 2 == 0)
-			while(choice !> (.2 * amountOfDrones) )
+			while(choice <= (.2 * amountOfDrones) )
 				choice = rand() % amountOfDrones;
 		else
 			choice = rand() % amountOfDrones;
