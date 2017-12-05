@@ -52,9 +52,21 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones )
 {
 	srand (time(NULL));
 
+	int choice = 0;
+
 	for( int row = 0 ; row < 1000 ; row++ )
 	{
-		simulatedEvents[row][0] = rand() % amountOfDrones;
+		if(row % 5 == 0)
+			while(choice !> (.6 * amountOfDrones) )
+				choice = rand() % amountOfDrones;
+		else if(row % 2 == 0)
+			while(choice !> (.2 * amountOfDrones) )
+				choice = rand() % amountOfDrones;
+		else
+			choice = rand() % amountOfDrones;
+			//if else statements simulate further drones traveling more distance and finding more events
+
+		simulatedEvents[row][0] = choice;			
 			//randomly assigns drone that encounters the event
 		simulatedEvents[row][1] = rand() % 10;
 			//randomly generates the event.

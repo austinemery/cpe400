@@ -19,8 +19,6 @@
 // Included Files //////////////////////////////
 //
 
-	#include <iostream>
-	#include <vector>
 	#include "classes.h"
 	using namespace std;
 //
@@ -394,5 +392,22 @@
 		fleet[goingRight].updateBattery(4);
 		fleet[goingLeft].updateBattery(4);
 
+	}
+
+	unsigned int CCObject::getDT()
+	{
+	  long long TimeNowMillis = GetCurrentTimeMillis();
+	  assert(TimeNowMillis >= m_currentTimeMillis);
+	  unsigned int DeltaTimeMillis = (unsigned int)(TimeNowMillis - m_currentTimeMillis);
+	  m_currentTimeMillis = TimeNowMillis;
+	  return DeltaTimeMillis;
+	}
+
+	long long CCObject::GetCurrentTimeMillis()
+	{
+	  timeval t;
+	  gettimeofday(&t, NULL);
+	  long long ret = t.tv_sec * 1000 + t.tv_usec / 1000;
+	  return ret;
 	}
 //
