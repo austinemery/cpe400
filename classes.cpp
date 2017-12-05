@@ -410,6 +410,8 @@
 
 	void CCObject::proactiveSimulation( const int events[][2] )
 	{
+		//grab start of simulation time
+		long long startOfSimulation = getCurrentTimeMillis();
 		//Dynamic array that stores information on the whole graph. If the drones can see eachother, the distance will be in the index
 		proactiveArray = new int*[totalFleetSize];
 		for(int index = 0; index < totalFleetSize; index++)
@@ -475,9 +477,17 @@
 				fleet[index].updateBattery(0);
 			}
     	}
+
+    	//grab end of simulation time
+		long long endOfSimulationTime = getCurrentTimeMillis();
+    	//Subtract start of simulation time
+    	proactiveSimulationTime[currentSimulationIndex] = endOfSimulationTime - startOfSimulation;
 	}
 	void CCObject::reactiveSimulation( const int events[][2] )
 	{
+		//grab start of simulation time.
+		long long startOfSimulation = getCurrentTimeMillis();
+
 		int eventIndex = 0;
 
 		//While the drones all have more than 10% of their battery.
@@ -582,6 +592,11 @@
 			}		
 
 		}
+
+		//Grab end of simulation time.
+		long long endOfSimulationTime = getCurrentTimeMillis();
+		//Subtrace from start of simulation time.
+		reactiveSimulationTime[currentSimulationIndex] = endOfSimulationTime - startOfSimulation;
 	}
 	bool CCObject::droneAcceptableBatteryLife()
 	{
@@ -736,7 +751,7 @@
 		double avgProactiveSimulationTime = 0;
 		double avgReactiveSimulationTime = 0;
 
-		for( int index = 0 ; index < 1000 ; index++ )
+		for( int index = 0 ; index < 100 ; index++ )
 		{
 			avgProactivePacket += proactiveTotalMessagesReceived[index];
 			avgReactivePacket += reactiveTotalMessagesReceived[index];
@@ -754,7 +769,20 @@
 			avgReactiveAvgValue += reactiveAvgBatteryLife[index];
 		}
 
+			avgProactivePacket /= 100;
+			avgReactivePacket /= 100;
 
+			avgProactiveSimulationTime /= 100;
+			avgReactiveSimulationTime /= 100;
+
+			avgProactiveMinValue /= 100;
+			avgReactiveMinValue /= 100;
+
+			avgProactiveMaxValue /= 100;
+			avgReactiveMaxValue /= 100;
+
+			avgProactiveAvgValue /= 100 *  totalFleetSize;
+			avgReactiveAvgValue /= 100 * totalFleetSize;
 
 		//Print it all out
 		cout << "**********************************************" << endl;
@@ -763,9 +791,27 @@
 		cout << "* ========================================== *" << endl;
 		cout << "*                  Proactive                 *" << endl;
 		cout << "* ========================================== *" << endl;
-		cout << "* ========================================== *" << endl;
+		cout << "*                                            *" << endl;
+		cout << "* Average Packets Sent: " << avgProactivePacket << endl;
+		cout << "*      Out of 1000 total packets in sim." << endl;
+		cout << "* Average Min. Battery: " << avgProactiveMinValue << endl;
+		cout << "* Average Max. Battery: " << avgProactiveMaxValue << endl;
+		cout << "* Average Total Battery: " << avgProactiveAvgValue << endl;
+		cout << "* Average Time of Simulation: " << avgProactiveSimulationTime << endl;
+		cout << "*      In milliseconds." << endl;
+		cout << "*                                            *" << endl;
+ 		cout << "* ========================================== *" << endl;
 		cout << "*                  Reactive                  *" << endl;
 		cout << "* ========================================== *" << endl;
 		cout << "*                                            *" << endl;
+		cout << "* Average Packets Sent: " << avgReactivePacket << endl;
+		cout << "*      Out of 1000 total packets in sim." << endl;
+		cout << "* Average Min. Battery: " << avgReactiveMinValue << endl;
+		cout << "* Average Max. Battery: " << avgReactiveMaxValue << endl;
+		cout << "* Average Total Battery: " << avgReactiveAvgValue << endl;
+		cout << "* Average Time of Simulation: " << avgReactiveSimulationTime << endl;
+		cout << "*      In milliseconds." << endl;
+		cout << "*                                            *" << endl;
+		cout << "**********************************************" << endl;
 	}
 //
