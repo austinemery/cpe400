@@ -349,9 +349,6 @@
 			cout << "Left Neighbor: " << fleet[index].getLeftNeighbor() << endl;
 			cout << "Right Neighbor: " << fleet[index].getRightNeighbor() << endl;
 			cout << endl;
-
-			getDT();
-			cout << m_currentTimeMillis << endl;
 		}
 	}
 	int CCObject::broadcast()
@@ -374,26 +371,38 @@
     		proactiveArray[index] = new int[totalFleetSize];
 		}
 
+		//init to 0
+		for (int index = 0; index < totalFleetSize; ++index)
+		{
+			for (int jindex = 0; jindex < totalFleetSize; ++jindex)
+			{
+				proactiveArray[index][jindex] = 0;
+			}
+		}
+
+		//construct "graph"
 		for (int index = 0; index < totalFleetSize; index++)
 		{
 			//the inner drone
 			if (index == 0)
 			{
-				proactiveArray[index][fleet[index].getRightNeighbor()] = fleet[index].getRightNeighborDistance();
+				proactiveArray[index][fleet[index].getRightNeighbor()] = distanceBetweenDrones;
 			}
 			//the outer drone
 			else if(index == totalFleetSize - 1)
 			{
-				proactiveArray[index][fleet[index].getLeftNeighbor()] = fleet[index].getLeftNeighborDistance();
+				proactiveArray[index][fleet[index].getLeftNeighbor()] = distanceBetweenDrones;
 			}
 			//the rest of the drones
 			else
 			{
-				proactiveArray[index][fleet[index].getRightNeighbor()] = fleet[index].getRightNeighborDistance();
-				proactiveArray[index][fleet[index].getLeftNeighbor()] = fleet[index].getLeftNeighborDistance();
+				proactiveArray[index][fleet[index].getRightNeighbor()] = distanceBetweenDrones;
+				proactiveArray[index][fleet[index].getLeftNeighbor()] = distanceBetweenDrones;
 			}
 		}
 
+		//Print "graph"
+		cout << "START OF Proactive Array" << endl;
 		for (int index = 0; index < totalFleetSize; ++index)
 		{
 			for (int jindex = 0; jindex < totalFleetSize; ++jindex)
@@ -402,12 +411,10 @@
 			}
 			cout << endl;
 		}
+		cout << "END OF Proactive Array" << endl;
 
     	while( droneAcceptableBatteryLife() )
     	{
-    		//Node requests to communicate to neighbors
-				//re-establish all pathes
-
 			//On message get
 				//can you receive a message?
 					// Y/N
