@@ -231,7 +231,7 @@
 		*/
 		return (remainingPackageSpace() >= 8);
 	}
-	bool DroneObject::sendPackage(DroneObject& neighbor)
+	void DroneObject::sendPackage(DroneObject& neighbor)
 	{
 		int packageSize = 0;
 		while(packageSize < 8)
@@ -550,7 +550,7 @@
 				{
 					if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
 					{
-						
+						fleet[droneReceiving].sendPackage(fleet[ fleet[droneReceiving].getLeftNeighbor() ]);
 					}
 					//else continue using buffer space
 				} 

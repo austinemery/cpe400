@@ -223,7 +223,7 @@
 			  *		
 			  */
 			//
-			bool sendPackage( DroneObject& neighbor );
+			void sendPackage( DroneObject& neighbor );
 			// *
 			//   *@name receivePackage
 			//   *
