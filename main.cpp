@@ -29,20 +29,33 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones );
 //
 	int main(int argc, char const *argv[])
 	{
+		if( argc == 1 )
+		{
+			cout << "Please run with a command line argument indicating the desired amount of drones." << endl;
+			cout << "Thank you." << endl;
+
+			return 0;
+		}
 		int amountOfDrones = atoi(argv[1]); //Turn argv[1] back into a number
 		int simulatedEvents[1000][2] = {0};
 				//Two cols. One for the drone it's going to, one indicating what the event was.
 				//NO NOT EDIT ONCE CREATED.
-		populateEvents(simulatedEvents , amountOfDrones);
-			//M: consider also writing to a file or just having a file so all the input is the same while testing.
-			//M: I don't know how to get these to the drones yet. We need to talk about it.
 		CCObject ComCon(amountOfDrones);
 
-		ComCon.printFleet();
+		// for( int index = 0 ; index < 100 ; index++ )
+		// {
+		// 	populateEvents(simulatedEvents , amountOfDrones);
 
-		ComCon.reactiveSimulation( simulatedEvents );
+		// 	ComCon.reactiveSimulation( simulatedEvents );
 
-		ComCon.printFleet();
+		// 	ComCon.resetSimulation();
+
+		// 	ComCon.proactiveSimulation( simulatedEvents );
+
+		// 	ComCon.incrementSimulationIndex();
+		// }
+
+		ComCon.totalSimulationSummary();
 
 		return 0;
 	}

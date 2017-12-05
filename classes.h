@@ -385,6 +385,9 @@
 			//
 			long long getCurrentTimeMillis();
 
+			void resetSimulation();
+			void incrementSimulationIndex();
+			void totalSimulationSummary();
 		private:
 			int totalFleetSize;
 			int distanceBetweenDrones;
@@ -394,10 +397,11 @@
 			int** proactiveArray;
 
 
-			int proactiveTotalMessagesReceived;
-			int reactiveTotalMessagesReceived;
-			long long proactiveSimulationTime;
-			long long reactiveSimulationTime;
+			int currentSimulationIndex;
+			int proactiveTotalMessagesReceived[100];
+			int reactiveTotalMessagesReceived[100];
+			long long proactiveSimulationTime[100];
+			long long reactiveSimulationTime[100];
 		//friend class CCObject;
 	};
 //
