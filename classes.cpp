@@ -245,6 +245,9 @@
 	{
 		switch( situation )
 		{
+			case (-1): //The drone is being reset
+					remainingBattery = 100;
+					break;
 			case 0: // 0: A cycle has gone by, account for battery life drain
 					
 					remainingBattery -= getCCDistance() * .01;
@@ -330,10 +333,18 @@
 			totalFleetSize = numberOfDrones;
 			distanceBetweenDrones = 100 / numberOfDrones; 
 				//Keeping this an int in order to account for errors in drone position
-			proactiveTotalMessagesReceived = 0;
-			reactiveTotalMessagesReceived = 0;
-			proactiveSimulationTime = 0;
-			reactiveSimulationTime = 0;
+			
+			currentSimulationIndex = 0;
+			for( int index = 0 ; index < 100 ; index++ )
+			{
+				proactiveTotalMessagesReceived[index] = 0;
+				reactiveTotalMessagesReceived[index] = 0;
+				proactiveSimulationTime[index] = 0;
+				reactiveSimulationTime[index] = 0;
+			}
+
+
+
 			for( int index = 0 ; index < numberOfDrones ; index++ )
 			{
 				fleet.push_back( DroneObject( index , numberOfDrones ) );				
@@ -364,6 +375,10 @@
 			cout << "Right Neighbor: " << fleet[index].getRightNeighbor() << endl;
 			cout << endl;
 		}
+	}
+	void CCObject::incrementSimulationIndex()
+	{
+		currentSimulationIndex++;
 	}
 	int CCObject::broadcast()
 	{
@@ -622,5 +637,54 @@
 	  gettimeofday(&t, NULL);
 	  long long ret = t.tv_sec * 1000 + t.tv_usec / 1000;
 	  return ret;
+	}
+	void CCObject::resetSimulation()
+	{
+		//Reset the drones for the next trial.
+		fleet.clear();
+
+		//create the new drones
+		for( int index = 0 ; index < totalFleetSize ; index++ )
+		{
+			fleet.push_back( DroneObject( index , totalFleetSize ) );				
+		}
+
+		for( int index = 0 ; index < totalFleetSize ; index++ )
+		{
+			fleet[index].personalWeight = distanceBetweenDrones;
+		}
+
+	}
+	void CCObject::totalSimulationSummary()
+	{
+		//Take the averages of all the values we gathered.
+
+		double avgProactivePacket = 0;
+		double avgReactivePacket = 0;
+
+		double double avgProactiveSimulationTime = 0;
+		double double avgReactiveSimulationTime = 0;
+
+		for( int index = 0 ; index < 1000 ; index++ )
+		{
+			avgProactivePacket += proactiveTotalMessagesReceived[index];
+			avgReactivePacket += reactiveTotalMessagesReceived[index];
+
+			avgProactiveSimulationTime += proactiveSimulationTime[index];
+			avgReactiveSimulationTime += reactiveSimulationTime[index];
+		}
+
+
+		//Print it all out
+		cout << "**********************************************" << endl;
+		cout << "   Summary Results for " << totalFleetSize << " amount of drones." << endl;
+		cout << "**********************************************" << endl;
+		cout << "* ========================================== *" << endl;
+		cout << "*                  Proactive                 *" << endl;
+		cout << "* ========================================== *" << endl;
+		cout << "* ========================================== *" << endl;
+		cout << "*                  Reactive                  *" << endl;
+		cout << "* ========================================== *" << endl;
+		cout << "*                                            *" << endl;
 	}
 //
