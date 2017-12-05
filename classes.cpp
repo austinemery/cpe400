@@ -225,6 +225,30 @@
 	{
 		return edges[0][2];
 	}
+	int DroneObject::getLeftNeigborDistance()
+	{
+		return edges[1][1];
+	}
+	int DroneObject::getRightNeighborDistance()
+	{
+		return edges[1][2];
+	}
+	int DroneObject::getCCDistance()
+	{
+		return edges[1][0];
+	}
+	void DroneObject::setCCDistance(int distance)
+	{
+		edges[1][0] = distance;
+	}
+	void DroneObject::setLeftNeigborDistance(int distance)
+	{
+		edges[1][1] = distance;
+	}
+	void DroneObject::setRightNeighborDistance(int distance)
+	{
+		edges[1][2] = distance;
+	}
 	//Update
 	void DroneObject::updateBattery( const int& situation )
 	{
@@ -350,11 +374,38 @@
     		proactiveArray[index] = new int[totalFleetSize];
 		}
 
-		
+		for (int index = 0; index < totalFleetSize; index++)
+		{
+			//the inner drone
+			if (index == 0)
+			{
+				proactiveArray[0][1] = fleet[index].getRightNeighbor();
+			}
+			//the outer dron
+			else if(index == totalFleetSize - 1)
+			{
+
+			}
+		}
 
     	while( droneAcceptableBatteryLife() )
     	{
+    		//Node requests to communicate to neighbors
+				//re-establish all pathes
 
+			//On message get
+				//can you receive a message?
+					// Y/N
+				//Y: send package
+				//N: buffer package
+
+
+
+			//Update drones
+			for (int index = 0; index < totalFleetSize; index++)
+			{
+				fleet[index].updateBattery(0);
+			}
     	}
 	}
 	void CCObject::reactiveSimulation()
@@ -394,12 +445,13 @@
 
 		return true;
 	}
-	bool CCObject::needToSwap( const DroneObject& innerDrone, const DroneObject& outerDrone)
+	bool CCObject::needToSwap( DroneObject& innerDrone, DroneObject& outerDrone)
 	{
 		if(( innerDrone.getBattery() + outerDrone.getBattery() < 100 ) && (innerDrone.getBattery() > outerDrone.getBattery()))
 		{
 			return true;
-		} else
+		} 
+		else
 		{
 			return false;
 		}
