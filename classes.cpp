@@ -229,16 +229,22 @@
 			return false;
 		}
 		*/
-		return (remainingPackageSpace() > 0);
+		return (remainingPackageSpace() >= 8);
 	}
-	bool DroneObject::sendPackage( const int** events )
+	bool DroneObject::sendPackage(DroneObject& neighbor)
 	{
-
+		int packageSize = 0;
+		while(packageSize < 8)
+		{
+			packageSize += package[0].getSize();
+			neighbor.collectPackage(package[0]);
+			package.erase(package.begin());
+		}
 	}
-	bool DroneObject::receivePackage( const int** events )
-	{
+	// bool DroneObject::receivePackage( const int** events )
+	// {
 
-	}
+	// }
 
 	//Update
 	void DroneObject::updateBattery( const int& situation )
@@ -299,6 +305,12 @@
 		//1 for left
 		//2 for right
 		edges[1][neighbor] = newDistance;
+	}
+
+	void DroneObject::collectPackage(PacketObject& object)
+	{
+		package.push_back(object);
+		totalPackageSize += object.getSize();
 	}
 
 	//operator
@@ -544,14 +556,15 @@
 			//can you receive a message?
 			if( fleet[droneReceiving].getRank() != 0 )
 			{
-				if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
+				if(fleet[droneReceiving].remainingPackageSpace() <= 8)
 				{
-					//Y: send package
-				}
-				else
-				{
-					//N: buffer package				
-				}
+					if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
+					{
+						
+					}
+					//else continue using buffer space
+				} 
+					
 				// Update drones battery
 				fleet[droneReceiving].updateBattery(5);
 				fleet[droneReceiving].updateBattery(2);

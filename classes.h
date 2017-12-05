@@ -223,15 +223,15 @@
 			  *		
 			  */
 			//
-			bool sendPackage( const int** events );
-			/**
-			  *@name receivePackage
-			  *
-			  *@brief 
-			  *		
-			  */
-			//
-			bool receivePackage( const int** events );
+			bool sendPackage( DroneObject& neighbor );
+			// *
+			//   *@name receivePackage
+			//   *
+			//   *@brief 
+			//   *		
+			  
+			// //
+			// bool receivePackage( const int** events );
 			/**
 			  *@name updateBattery
 			  *
@@ -249,9 +249,19 @@
 			//
 			void updateEdgeDistance( const int& , const int& );
 			/**
-			  *@name updateEdgeDistance
+			  *@name collectPackage
 			  *
-			  *@brief copies all the information from on drone to another.
+			  *@brief Saves the encountered data to the package vector.
+			  *		
+			  */
+			//
+			void collectPackage(PacketObject&);
+
+
+			/**
+			  *@name operate= overload
+			  *
+			  *@brief copies all the information from one drone to another.
 			  *		
 			  */
 			//
