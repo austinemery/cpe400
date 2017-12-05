@@ -595,7 +595,7 @@
 
 	unsigned int CCObject::getDT()
 	{
-	  long long TimeNowMillis = GetCurrentTimeMillis();
+	  long long TimeNowMillis = getCurrentTimeMillis();
 	  assert(TimeNowMillis >= m_currentTimeMillis);
 	  unsigned int DeltaTimeMillis = (unsigned int)(TimeNowMillis - m_currentTimeMillis);
 	  m_currentTimeMillis = TimeNowMillis;
