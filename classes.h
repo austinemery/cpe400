@@ -65,13 +65,13 @@
 			bool hasPackage();
 			int getID();
 			int getRank();
-			int getLeftNeigbor();
+			int getLeftNeighbor();
 			int getRightNeighbor();
-			int getLeftNeigborDistance();
+			int getLeftNeighborDistance();
 			int getRightNeighborDistance();
 			int getCCDistance();
 			void setCCDistance(int);
-			void setLeftNeigborDistance(int);
+			void setLeftNeighborDistance(int);
 			void setRightNeighborDistance(int);
 			bool ableToReceivePackage( const int );
 			//Send info

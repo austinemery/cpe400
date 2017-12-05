@@ -217,7 +217,7 @@
 	{
 		return totalPackagesSent;
 	}
-	int DroneObject::getLeftNeigbor()
+	int DroneObject::getLeftNeighbor()
 	{
 		return edges[0][1];
 	}
@@ -225,7 +225,7 @@
 	{
 		return edges[0][2];
 	}
-	int DroneObject::getLeftNeigborDistance()
+	int DroneObject::getLeftNeighborDistance()
 	{
 		return edges[1][1];
 	}
@@ -241,7 +241,7 @@
 	{
 		edges[1][0] = distance;
 	}
-	void DroneObject::setLeftNeigborDistance(int distance)
+	void DroneObject::setLeftNeighborDistance(int distance)
 	{
 		edges[1][1] = distance;
 	}
@@ -346,7 +346,7 @@
 			cout << "ID: " << fleet[index].getID() << endl;
 			cout << "Battery Life: " << fleet[index].getBattery() << endl;
 			cout << "Total Packages Sent: " << fleet[index].getTotalPackages() << endl;
-			cout << "Left Neighbor: " << fleet[index].getLeftNeigbor() << endl;
+			cout << "Left Neighbor: " << fleet[index].getLeftNeighbor() << endl;
 			cout << "Right Neighbor: " << fleet[index].getRightNeighbor() << endl;
 			cout << endl;
 
@@ -379,13 +379,28 @@
 			//the inner drone
 			if (index == 0)
 			{
-				proactiveArray[0][1] = fleet[index].getRightNeighbor();
+				proactiveArray[index][fleet[index].getRightNeighbor()] = fleet[index].getRightNeighborDistance();
 			}
-			//the outer dron
+			//the outer drone
 			else if(index == totalFleetSize - 1)
 			{
-
+				proactiveArray[index][fleet[index].getLeftNeighbor()] = fleet[index].getLeftNeighborDistance();
 			}
+			//the rest of the drones
+			else
+			{
+				proactiveArray[index][fleet[index].getRightNeighbor()] = fleet[index].getRightNeighborDistance();
+				proactiveArray[index][fleet[index].getLeftNeighbor()] = fleet[index].getLeftNeighborDistance();
+			}
+		}
+
+		for (int index = 0; index < totalFleetSize; ++index)
+		{
+			for (int jindex = 0; jindex < totalFleetSize; ++jindex)
+			{
+				cout << proactiveArray[index][jindex] << ' ';
+			}
+			cout << endl;
 		}
 
     	while( droneAcceptableBatteryLife() )
