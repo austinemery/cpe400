@@ -67,7 +67,7 @@
 		indexOfLastPacket = -1;
 		totalPackageSize = 0;
 		totalPackagesSent = 0;
-		remainingBattery = 100 - positionInFleet;
+		remainingBattery = 100;			//Assume in position with full battery
 		rankInFleet = positionInFleet;
 		fleetTotal = totalInFleet;
 
@@ -283,15 +283,15 @@
 			case 4: // 4: Traded positions with counterpart
 					if((rankInFleet == fleetTotal/2) || (rankInFleet == (fleetTotal/2 + 1)))
 					{
-						remainingBattery -= 6;
+						remainingBattery -= 5.01;
 					}
 					else if(rankInFleet < (fleetTotal/2))
 					{
-						remainingBattery -= 5 + (fleetTotal - (rankInFleet * 2));
+						remainingBattery -= 5 + ((fleetTotal - (rankInFleet * 2))*0.01);
 					}
 					else
 					{
-						remainingBattery -= 5 + (fleetTotal - ((fleetTotal - rankInFleet) * 2));
+						remainingBattery -= 5 + (fleetTotal - (((fleetTotal - rankInFleet) * 2))*0.01);
 					}
 					//includes battery for data sent to swap(5%) and the distance traveled(at least 3%)	
 					break;				
@@ -805,6 +805,14 @@
 			avgProactiveMaxValue /= 100;
 			avgReactiveMaxValue /= 100;
 
+			if( avgProactiveMaxValue > 100 )
+			{
+				avgProactiveMaxValue = 100;
+			}else if( avgReactiveMaxValue > 100 )
+			{
+				avgReactiveMaxValue = 100;
+			}
+
 			avgProactiveAvgValue /= 100 *  totalFleetSize;
 			avgReactiveAvgValue /= 100 * totalFleetSize;
 
@@ -818,9 +826,9 @@
 		cout << "*                                            *" << endl;
 		cout << "* Average Packets Sent: " << avgProactivePacket << endl;
 		cout << "*      Out of 1000 total packets in sim." << endl;
-		cout << "* Average Min. Battery: " << avgProactiveMinValue << endl;
-		cout << "* Average Max. Battery: " << avgProactiveMaxValue << endl;
-		cout << "* Average Total Battery: " << avgProactiveAvgValue << endl;
+		cout << "* Average Min. Battery: " << avgProactiveMinValue << "%" << endl;
+		cout << "* Average Max. Battery: " << avgProactiveMaxValue << "%" << endl;
+		cout << "* Average Total Battery: " << avgProactiveAvgValue << "%" << endl;
 		cout << "* Average Time of Simulation: " << avgProactiveSimulationTime << endl;
 		cout << "*      In milliseconds." << endl;
 		cout << "*                                            *" << endl;
@@ -830,9 +838,9 @@
 		cout << "*                                            *" << endl;
 		cout << "* Average Packets Sent: " << avgReactivePacket << endl;
 		cout << "*      Out of 1000 total packets in sim." << endl;
-		cout << "* Average Min. Battery: " << avgReactiveMinValue << endl;
-		cout << "* Average Max. Battery: " << avgReactiveMaxValue << endl;
-		cout << "* Average Total Battery: " << avgReactiveAvgValue << endl;
+		cout << "* Average Min. Battery: " << avgReactiveMinValue << "%" << endl;
+		cout << "* Average Max. Battery: " << avgReactiveMaxValue << "%" << endl;
+		cout << "* Average Total Battery: " << avgReactiveAvgValue << "%" << endl;
 		cout << "* Average Time of Simulation: " << avgReactiveSimulationTime << endl;
 		cout << "*      In milliseconds." << endl;
 		cout << "*                                            *" << endl;
