@@ -32,7 +32,7 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones );
 		int amountOfDrones = atoi(argv[1]); //Turn argv[1] back into a number
 		int simulatedEvents[1000][2] = {0};
 				//Two cols. One for the drone it's going to, one indicating what the event was.
-		
+				//NO NOT EDIT ONCE CREATED.
 		populateEvents(simulatedEvents , amountOfDrones);
 			//M: consider also writing to a file or just having a file so all the input is the same while testing.
 			//M: I don't know how to get these to the drones yet. We need to talk about it.

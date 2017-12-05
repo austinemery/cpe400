@@ -339,14 +339,24 @@
 		{
 			//Check to make sure drones don't need to trade places.
 
-			//
+			//Node requests to communicate to neighbors
+				//re-establish all pathes
+
+			//On message get
+				//can you receive a message?
+					// Y/N
+				//Y: send package
+				//N: buffer package
+			
+
+
 		}
 	}
 	bool CCObject::droneAcceptableBatteryLife()
 	{
 		for( int index = 0 ; index < totalFleetSize ; index++ )
 		{
-			if( fleet.getBattery() < 10.0 )	//This amount is subject to change.
+			if( fleet[index].getBattery() < 10.0 )	//This amount is subject to change.
 			{
 				return false;
 			}
