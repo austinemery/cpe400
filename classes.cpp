@@ -478,6 +478,13 @@
 			}
 		}
 
+		for (int index = 0; index < totalFleetSize; index++)
+		{
+			fleet[index].updateBattery(3);
+			fleet[index].updateBattery(5);
+		}
+
+
 		//Print "graph"
 		/*
 		cout << "START OF Proactive Array" << endl;
@@ -506,11 +513,13 @@
 				{
 					if( index == 0 )
 					{
-						fleet[index].ccPackage(*this,2);
+						fleet[index].ccPackage(*this,1);
+						fleet[index].updateBattery(3);
 					}
 					else
 					{
-						fleet[index].sendPackage(fleet[ fleet[index].getLeftNeighbor() ]);
+						fleet[index].sendPackage(fleet[ index - 1 ]);
+						fleet[index].updateBattery(2);
 					}
 				}
 			} 
@@ -520,42 +529,16 @@
 				{
 					if( index == 0 )
 					{
-						fleet[index].ccPackage(*this,2);
+						fleet[index].ccPackage(*this,1);
+						fleet[index].updateBattery(3);
 					}
 					else
 					{
-						fleet[index].sendPackage(fleet[ fleet[index].getLeftNeighbor() ]);
+						fleet[index].sendPackage(fleet[ index - 1 ]);
+						fleet[index].updateBattery(2);
 					}
 				}
 			}
-
-
-			// if(fleet[droneReceiving].remainingPackageSpace() <= 8)
-			// {
-			// 	if( fleet[droneReceiving].getRank() != 0 )
-			// 	{
-				
-			// 		if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
-			// 		{
-			// 			fleet[droneReceiving].sendPackage(fleet[ fleet[droneReceiving].getLeftNeighbor() ]);
-			// 		}
-						
-			// 		// Update drones battery
-			// 		fleet[droneReceiving].updateBattery(5);
-			// 		fleet[droneReceiving].updateBattery(2);
-			// 		fleet[droneReceiving-1].updateBattery(5);
-			// 		fleet[droneReceiving-1].updateBattery(2);
-			// 	} 
-			// 	else
-			// 	{
-			// 		fleet[droneReceiving].ccPackage(*this, 1); //1 for proactive, 2 for reactive
-
-			// 		fleet[droneReceiving].updateBattery(2);
-			// 	}
-			// }
-			//else continue using buffer and no transfer battery usage
-
-
 
 			//Update drones
 			for (int index = 0; index < totalFleetSize; index++)
@@ -887,7 +870,7 @@
 				avgReactiveMaxValue = 100;
 			}
 
-			avgProactiveAvgValue /= 100 *  totalFleetSize;
+			avgProactiveAvgValue /= (100 *  totalFleetSize);
 			avgReactiveAvgValue /= 100 * totalFleetSize;
 
 		//Print it all out
