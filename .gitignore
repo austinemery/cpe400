@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+
+#Program Name
+main
