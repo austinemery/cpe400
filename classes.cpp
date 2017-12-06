@@ -556,6 +556,12 @@
 
 		int eventIndex = 0;
 
+
+		//Drones will start knowing how far they are away from CC
+		for( int index = 0 ; index < totalFleetSize ; index++ )
+		{
+			fleet[index].setCCDistance( fleet[index].getWeight() * (index+1) );
+		}
 		//While the drones all have more than 10% of their battery.
 		while( droneAcceptableBatteryLife() )
 		{
@@ -581,6 +587,7 @@
 				{
 					//there is no right neighbor to grab
 					fleet[droneReceiving].setLeftNeighborDistance( fleet[droneReceiving-1].getWeight() );
+
 						//This is 
 								//sending a message to determine distance
 								//receiving message with the distance
