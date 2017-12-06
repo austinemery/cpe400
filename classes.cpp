@@ -234,7 +234,7 @@
 	void DroneObject::sendPackage(DroneObject& neighbor)
 	{
 		int packageSize = 0;
-		while(packageSize < 8)
+		while(packageSize < 8  && (hasPackage()))
 		{
 			packageSize += package[0].getSize();
 			neighbor.collectPackage(package[0]);
@@ -256,47 +256,47 @@
 					break;
 			case 0: // 0: A cycle has gone by, account for battery life drain
 					
-					remainingBattery -= getCCDistance() * .01;
+					remainingBattery -= getCCDistance() * .0001;
 						//Battery is drained by 1% for idle movement through air
 					break;
 			case 1: // 1: A message has been received
 					
-					remainingBattery -= package[indexOfLastPacket].getSize() * 0.1;
+					remainingBattery -= package[indexOfLastPacket].getSize() * 0.001;
 						//Every byte received takes 0.1 off the battery.
 					break;
 			case 2: // 2: A message has been sent. Messages should only be sent to the left
 					
 					if( rankInFleet == 0 ) //if we're the first drone in line, send to C&C
 					{
-						remainingBattery -= edges[1][0] * 0.1;
+						remainingBattery -= edges[1][0] * 0.001;
 					} else
 					{
-						remainingBattery -= edges[1][1] * 0.1;							
+						remainingBattery -= edges[1][1] * 0.001;							
 					}
 						//Every foot a message is sent takes 0.1 off the battery.
 					break;
 			case 3: // 3: Direct Message to C&C
 
-					remainingBattery -= edges[1][0] * 0.1;
+					remainingBattery -= edges[1][0] * 0.001;
 						//Every foot a message is sent takes 0.1 off the battery.
 					break;
 			case 4: // 4: Traded positions with counterpart
 					if((rankInFleet == fleetTotal/2) || (rankInFleet == (fleetTotal/2 + 1)))
 					{
-						remainingBattery -= 5.01;
+						remainingBattery -= 5.001;
 					}
 					else if(rankInFleet < (fleetTotal/2))
 					{
-						remainingBattery -= 5 + ((fleetTotal - (rankInFleet * 2))*0.01);
+						remainingBattery -= 5 + ((fleetTotal - (rankInFleet * 2))*0.001);
 					}
 					else
 					{
-						remainingBattery -= 5 + (fleetTotal - (((fleetTotal - rankInFleet) * 2))*0.01);
+						remainingBattery -= 5 + (fleetTotal - (((fleetTotal - rankInFleet) * 2))*0.001);
 					}
 					//includes battery for data sent to swap(5%) and the distance traveled(at least 3%)	
 					break;				
 			case 5: //5: Received request message from another drone for updated information.
-					remainingBattery -= 0.05;				
+					remainingBattery -= 0.005;				
 		}
 	}
 	void DroneObject::updateEdgeDistance( const int& neighbor, const int& newDistance )
@@ -312,15 +312,21 @@
 		package.push_back(object);
 		totalPackageSize += object.getSize();
 	}
+	int DroneObject::relayPackage()
+	{
+		int temp;
+		temp = package[0].getSize();
+		package.erase(package.begin());
+		return temp;
+	}
 
 	void DroneObject::ccPackage(CCObject& home, int choice)
 	{
 		int packageSize = 0;
-		while(packageSize < 8)
+		while(packageSize < 8  && (hasPackage()))
 		{
-			packageSize += package[0].getSize();
+			packageSize += relayPackage();
 			home.receivePackage(choice);
-			package.erase(package.begin());
 		}
 	}
 
@@ -506,6 +512,7 @@
     	//Subtract start of simulation time
     	proactiveSimulationTime[currentSimulationIndex] = endOfSimulationTime - startOfSimulation;
 	}
+
 	void CCObject::reactiveSimulation( const int events[][2] )
 	{
 		//grab start of simulation time.
@@ -578,30 +585,30 @@
 
 			//On message get
 			//can you receive a message?
-			if( fleet[droneReceiving].getRank() != 0 )
+			if(fleet[droneReceiving].remainingPackageSpace() <= 8)
 			{
-				if(fleet[droneReceiving].remainingPackageSpace() <= 8)
+				if( fleet[droneReceiving].getRank() != 0 )
 				{
+				
 					if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
 					{
 						fleet[droneReceiving].sendPackage(fleet[ fleet[droneReceiving].getLeftNeighbor() ]);
 					}
-					//else continue using buffer space
+						
+					// Update drones battery
+					fleet[droneReceiving].updateBattery(5);
+					fleet[droneReceiving].updateBattery(2);
+					fleet[droneReceiving-1].updateBattery(5);
+					fleet[droneReceiving-1].updateBattery(2);
 				} 
-					
-				// Update drones battery
-				fleet[droneReceiving].updateBattery(5);
-				fleet[droneReceiving].updateBattery(2);
-				fleet[droneReceiving-1].updateBattery(5);
-				fleet[droneReceiving-1].updateBattery(2);
-			} 
-			else
-			{
-				//fleet[droneReceiving].ccPackage(*this, 1); //1 for proactive, 2 for reactive
+				else
+				{
+					fleet[droneReceiving].ccPackage(*this, 2); //1 for proactive, 2 for reactive
 
-				fleet[droneReceiving].updateBattery(2);
+					fleet[droneReceiving].updateBattery(2);
+				}
 			}
-
+			//else continue using buffer and no transfer battery usage
 
 			//Update drones
 			for( int index = 0 ; index < totalFleetSize ; index++ )
@@ -620,6 +627,7 @@
 		//Grab end of simulation time.
 		long long endOfSimulationTime = getCurrentTimeMillis();
 		//Subtrace from start of simulation time.
+		
 		reactiveSimulationTime[currentSimulationIndex] = endOfSimulationTime - startOfSimulation;
 	}
 	bool CCObject::droneAcceptableBatteryLife()
@@ -704,7 +712,7 @@
 
 		int minValue = 100;
 		int maxValue = 0;
-
+		cout << "Total Packets for this Trial: " << reactiveTotalMessagesReceived[currentSimulationIndex] << endl;
 		for( int index = 0 ; index < totalFleetSize ; index++ )
 		{
 			if( fleet[index].getBattery() < minValue )

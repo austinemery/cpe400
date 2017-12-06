@@ -262,6 +262,14 @@
 			//
 			void collectPackage(PacketObject&);
 			/**
+			  *@name relayPackage
+			  *
+			  *@brief Returns package.
+			  *		
+			  */
+			//
+			int relayPackage();
+			/**
 			  *@name ccPackage
 			  *
 			  *@brief Sends an 8byte package to the CCObject.
@@ -269,6 +277,7 @@
 			  */
 			//
 			void ccPackage(CCObject&, int);
+
 
 
 			/**
