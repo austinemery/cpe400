@@ -224,19 +224,11 @@
 			/**
 			  *@name sendPackage
 			  *
-			  *@brief 
+			  *@brief sends the package down the fire brigade line towards CCObject
 			  *		
 			  */
 			//
 			void sendPackage( DroneObject& neighbor );
-			// *
-			//   *@name receivePackage
-			//   *
-			//   *@brief 
-			//   *		
-			  
-			// //
-			// bool receivePackage( const int** events );
 			/**
 			  *@name updateBattery
 			  *
@@ -264,7 +256,7 @@
 			/**
 			  *@name relayPackage
 			  *
-			  *@brief Returns package.
+			  *@brief Returns package, used to give neighbor the packet.
 			  *		
 			  */
 			//
@@ -272,7 +264,7 @@
 			/**
 			  *@name ccPackage
 			  *
-			  *@brief Sends an 8byte package to the CCObject.
+			  *@brief Sends an 8byte package to the CCObject from the first drone.
 			  *		
 			  */
 			//
@@ -340,17 +332,9 @@
 			//
 			bool printFleet();
 			/**
-			  *@name broadcast
-			  *
-			  *@brief 
-			  *		
-			  */
-			//
-			int broadcast();
-			/**
 			  *@name receivePackage
 			  *
-			  *@brief 
+			  *@brief similar to collectpackage for the drones, this takes in and sorts all sent packets
 			  *		
 			  */
 			//
@@ -416,9 +400,29 @@
 			  */
 			//
 			long long getCurrentTimeMillis();
-
+			/**
+			  *@name resetSimulation
+			  *
+			  *@brief Resets the simulation to allow for multiple trials 
+			  *		
+			  */
+			//
 			void resetSimulation( int );
+			/**
+			  *@name incrementSimulationIndex
+			  *
+			  *@brief Increments the simulation index by one to keep track of which trial is currently being used 
+			  *		
+			  */
+			//
 			void incrementSimulationIndex();
+			/**
+			  *@name totalSimulationSummary
+			  *
+			  *@brief Averages each piece of data tracked until this point and displays it for the user. 
+			  *		
+			  */
+			//
 			void totalSimulationSummary();
 		private:
 			int totalFleetSize;

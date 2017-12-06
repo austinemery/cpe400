@@ -416,10 +416,6 @@
 	{
 		currentSimulationIndex++;
 	}
-	int CCObject::broadcast()
-	{
-
-	}
 	bool CCObject::receivePackage(int choice)
 	{
 		if( choice == 1 )
