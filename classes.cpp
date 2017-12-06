@@ -479,6 +479,7 @@
 		}
 
 		//Print "graph"
+		/*
 		cout << "START OF Proactive Array" << endl;
 		for (int index = 0; index < totalFleetSize; ++index)
 		{
@@ -489,14 +490,39 @@
 			cout << endl;
 		}
 		cout << "END OF Proactive Array" << endl;
-
+		*/
+		int eventIndex = 0;
     	while( droneAcceptableBatteryLife() )
     	{
 			//On message get
-				//can you receive a message?
-					// Y/N
-				//Y: send package
-				//N: buffer package
+			//can you receive a message?
+			int droneReceiving = events[eventIndex][0];
+			PacketObject newEvent(events[eventIndex][1]);
+			fleet[droneReceiving].collectPackage(newEvent);
+			if(fleet[droneReceiving].remainingPackageSpace() <= 8)
+			{
+				if( fleet[droneReceiving].getRank() != 0 )
+				{
+				
+					if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
+					{
+						fleet[droneReceiving].sendPackage(fleet[ fleet[droneReceiving].getLeftNeighbor() ]);
+					}
+						
+					// Update drones battery
+					fleet[droneReceiving].updateBattery(5);
+					fleet[droneReceiving].updateBattery(2);
+					fleet[droneReceiving-1].updateBattery(5);
+					fleet[droneReceiving-1].updateBattery(2);
+				} 
+				else
+				{
+					fleet[droneReceiving].ccPackage(*this, 1); //1 for proactive, 2 for reactive
+
+					fleet[droneReceiving].updateBattery(2);
+				}
+			}
+			//else continue using buffer and no transfer battery usage
 
 
 
@@ -504,6 +530,13 @@
 			for (int index = 0; index < totalFleetSize; index++)
 			{
 				fleet[index].updateBattery(0);
+			}
+
+
+			eventIndex++;
+			if(eventIndex == 1000)
+			{
+				break;
 			}
     	}
 
@@ -712,7 +745,7 @@
 
 		int minValue = 100;
 		int maxValue = 0;
-		cout << "Total Packets for this Trial: " << reactiveTotalMessagesReceived[currentSimulationIndex] << endl;
+		
 		for( int index = 0 ; index < totalFleetSize ; index++ )
 		{
 			if( fleet[index].getBattery() < minValue )
