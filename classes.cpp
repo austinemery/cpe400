@@ -256,28 +256,28 @@
 					break;
 			case 0: // 0: A cycle has gone by, account for battery life drain
 					
-					remainingBattery -= getCCDistance() * .01;
+					remainingBattery -= getCCDistance() * .001;
 						//Battery is drained by 1% for idle movement through air
 					break;
 			case 1: // 1: A message has been received
 					
-					remainingBattery -= package[indexOfLastPacket].getSize() * 0.01;
+					remainingBattery -= package[indexOfLastPacket].getSize() * 0.001;
 						//Every byte received takes 0.1 off the battery.
 					break;
 			case 2: // 2: A message has been sent. Messages should only be sent to the left
 					
 					if( rankInFleet == 0 ) //if we're the first drone in line, send to C&C
 					{
-						remainingBattery -= edges[1][0] * 0.01;
+						remainingBattery -= edges[1][0] * 0.001;
 					} else
 					{
-						remainingBattery -= edges[1][1] * 0.01;							
+						remainingBattery -= edges[1][1] * 0.001;							
 					}
 						//Every foot a message is sent takes 0.1 off the battery.
 					break;
 			case 3: // 3: Direct Message to C&C
 
-					remainingBattery -= edges[1][0] * 0.01;
+					remainingBattery -= edges[1][0] * 0.001;
 						//Every foot a message is sent takes 0.1 off the battery.
 					break;
 			case 4: // 4: Traded positions with counterpart
@@ -287,16 +287,16 @@
 					}
 					else if(rankInFleet < (fleetTotal/2))
 					{
-						remainingBattery -= 5 + ((fleetTotal - (rankInFleet * 2))*0.01);
+						remainingBattery -= 5 + ((fleetTotal - (rankInFleet * 2))*0.001);
 					}
 					else
 					{
-						remainingBattery -= 5 + (fleetTotal - (((fleetTotal - rankInFleet) * 2))*0.01);
+						remainingBattery -= 5 + (fleetTotal - (((fleetTotal - rankInFleet) * 2))*0.001);
 					}
 					//includes battery for data sent to swap(5%) and the distance traveled(at least 3%)	
 					break;				
 			case 5: //5: Received request message from another drone for updated information.
-					remainingBattery -= 0.05;				
+					remainingBattery -= 0.005;				
 		}
 	}
 	void DroneObject::updateEdgeDistance( const int& neighbor, const int& newDistance )
@@ -537,7 +537,7 @@
 			}
 
 			eventIndex++;
-			if(eventIndex == 100000)
+			if(eventIndex == 1000)
 			{
 				break;
 			}
@@ -667,7 +667,7 @@
 			}			
 
 			eventIndex++;
-			if(eventIndex == 100000)
+			if(eventIndex == 1000)
 			{
 				break;
 			}		
@@ -883,7 +883,7 @@
 		cout << "* ========================================== *" << endl;
 		cout << "*                                            *" << endl;
 		cout << "* Average Packets Sent: " << avgProactivePacket << endl;
-		cout << "*      Out of 100000 total packets in sim." << endl;
+		cout << "*      Out of 1000 total packets in sim." << endl;
 		cout << "* Average Min. Battery: " << avgProactiveMinValue << "%" << endl;
 		cout << "* Average Max. Battery: " << avgProactiveMaxValue << "%" << endl;
 		cout << "* Average Total Battery: " << avgProactiveAvgValue << "%" << endl;
@@ -895,7 +895,7 @@
 		cout << "* ========================================== *" << endl;
 		cout << "*                                            *" << endl;
 		cout << "* Average Packets Sent: " << avgReactivePacket << endl;
-		cout << "*      Out of 100000 total packets in sim." << endl;
+		cout << "*      Out of 1000 total packets in sim." << endl;
 		cout << "* Average Min. Battery: " << avgReactiveMinValue << "%" << endl;
 		cout << "* Average Max. Battery: " << avgReactiveMaxValue << "%" << endl;
 		cout << "* Average Total Battery: " << avgReactiveAvgValue << "%" << endl;

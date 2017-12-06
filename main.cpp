@@ -37,7 +37,14 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones );
 			return 0;
 		}
 		int amountOfDrones = atoi(argv[1]); //Turn argv[1] back into a number
-		int simulatedEvents[100000][2] = {0};
+
+		if (amountOfDrones > 100)
+		{
+			cout << "Amount of drones is capped at 100 for your convenience!" << endl;
+			amountOfDrones = 100;
+		}
+
+		int simulatedEvents[1000][2] = {0};
 				//Two cols. One for the drone it's going to, one indicating what the event was.
 				//NO NOT EDIT ONCE CREATED.
 		CCObject ComCon(amountOfDrones);
@@ -65,12 +72,12 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones );
 
 void populateEvents( int simulatedEvents[][2] , int amountOfDrones )
 {
-	srand (time(NULL));
-
 	int choice = 0;
 
-	for( int row = 0 ; row < 100000 ; row++ )
+	for( int row = 0 ; row < 1000 ; row++ )
 	{
+		srand (time(NULL));
+
 		if(row % 5 == 0)
 			while(choice <= (.6 * amountOfDrones) )
 				choice = rand() % amountOfDrones;
