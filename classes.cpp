@@ -884,11 +884,12 @@
 		cout << "*                                            *" << endl;
 		cout << "* Average Packets Sent: " << avgProactivePacket << endl;
 		cout << "*      Out of 1000 total packets in sim." << endl;
+		cout << "* Average Time of Simulation: " << avgProactiveSimulationTime << endl;
+		cout << "*      In milliseconds." << endl;
+		cout << "* Throughput: " << avgProactivePacket / avgProactiveSimulationTime << " packets/millisecond" << endl;
 		cout << "* Average Min. Battery: " << avgProactiveMinValue << "%" << endl;
 		cout << "* Average Max. Battery: " << avgProactiveMaxValue << "%" << endl;
 		cout << "* Average Total Battery: " << avgProactiveAvgValue << "%" << endl;
-		cout << "* Average Time of Simulation: " << avgProactiveSimulationTime << endl;
-		cout << "*      In milliseconds." << endl;
 		cout << "*                                            *" << endl;
  		cout << "* ========================================== *" << endl;
 		cout << "*                  Reactive                  *" << endl;
@@ -896,11 +897,12 @@
 		cout << "*                                            *" << endl;
 		cout << "* Average Packets Sent: " << avgReactivePacket << endl;
 		cout << "*      Out of 1000 total packets in sim." << endl;
+		cout << "* Average Time of Simulation: " << avgReactiveSimulationTime << endl;
+		cout << "*      In milliseconds." << endl;
+		cout << "* Throughput: " << avgReactivePacket / avgReactiveSimulationTime << " packets/millisecond" << endl;
 		cout << "* Average Min. Battery: " << avgReactiveMinValue << "%" << endl;
 		cout << "* Average Max. Battery: " << avgReactiveMaxValue << "%" << endl;
 		cout << "* Average Total Battery: " << avgReactiveAvgValue << "%" << endl;
-		cout << "* Average Time of Simulation: " << avgReactiveSimulationTime << endl;
-		cout << "*      In milliseconds." << endl;
 		cout << "*                                            *" << endl;
 		cout << "**********************************************" << endl;
 	}
