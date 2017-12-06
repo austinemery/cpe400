@@ -480,24 +480,13 @@
 
 		for (int index = 0; index < totalFleetSize; index++)
 		{
+			fleet[index].setLeftNeighborDistance( fleet[index].getWeight() );
+			fleet[index].setRightNeighborDistance( fleet[index].getWeight() );
+			fleet[index].setCCDistance( fleet[index].getWeight() * (index + 1) );
 			fleet[index].updateBattery(3);
 			fleet[index].updateBattery(5);
 		}
 
-
-		//Print "graph"
-		/*
-		cout << "START OF Proactive Array" << endl;
-		for (int index = 0; index < totalFleetSize; ++index)
-		{
-			for (int jindex = 0; jindex < totalFleetSize; ++jindex)
-			{
-				cout << proactiveArray[index][jindex] << ' ';
-			}
-			cout << endl;
-		}
-		cout << "END OF Proactive Array" << endl;
-		*/
 		int eventIndex = 0;
     	while( droneAcceptableBatteryLife() )
     	{
@@ -544,8 +533,8 @@
 			for (int index = 0; index < totalFleetSize; index++)
 			{
 				fleet[index].updateBattery(0);
+				//cout << "Drone " << index << " battery: " << fleet[index].getBattery() << endl;
 			}
-
 
 			eventIndex++;
 			if(eventIndex == 100000)
