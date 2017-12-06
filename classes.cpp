@@ -636,10 +636,13 @@
 					if( index == 0 )
 					{
 						fleet[index].ccPackage(*this,2);
+						fleet[index].updateBattery(3);
+
 					}
 					else
 					{
 						fleet[index].sendPackage(fleet[ fleet[index].getLeftNeighbor() ]);
+						fleet[index].updateBattery(2);
 					}
 				}
 			} 
@@ -650,10 +653,12 @@
 					if( index == 0 )
 					{
 						fleet[index].ccPackage(*this,2);
+						fleet[index].updateBattery(3);
 					}
 					else
 					{
 						fleet[index].sendPackage(fleet[ fleet[index].getLeftNeighbor() ]);
+						fleet[index].updateBattery(2);
 					}
 				}
 			}
