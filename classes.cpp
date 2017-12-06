@@ -478,19 +478,6 @@
 			}
 		}
 
-		//Print "graph"
-		/*
-		cout << "START OF Proactive Array" << endl;
-		for (int index = 0; index < totalFleetSize; ++index)
-		{
-			for (int jindex = 0; jindex < totalFleetSize; ++jindex)
-			{
-				cout << proactiveArray[index][jindex] << ' ';
-			}
-			cout << endl;
-		}
-		cout << "END OF Proactive Array" << endl;
-		*/
 		int eventIndex = 0;
     	while( droneAcceptableBatteryLife() )
     	{
@@ -529,34 +516,6 @@
 				}
 			}
 
-
-			// if(fleet[droneReceiving].remainingPackageSpace() <= 8)
-			// {
-			// 	if( fleet[droneReceiving].getRank() != 0 )
-			// 	{
-				
-			// 		if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
-			// 		{
-			// 			fleet[droneReceiving].sendPackage(fleet[ fleet[droneReceiving].getLeftNeighbor() ]);
-			// 		}
-						
-			// 		// Update drones battery
-			// 		fleet[droneReceiving].updateBattery(5);
-			// 		fleet[droneReceiving].updateBattery(2);
-			// 		fleet[droneReceiving-1].updateBattery(5);
-			// 		fleet[droneReceiving-1].updateBattery(2);
-			// 	} 
-			// 	else
-			// 	{
-			// 		fleet[droneReceiving].ccPackage(*this, 1); //1 for proactive, 2 for reactive
-
-			// 		fleet[droneReceiving].updateBattery(2);
-			// 	}
-			// }
-			//else continue using buffer and no transfer battery usage
-
-
-
 			//Update drones
 			for (int index = 0; index < totalFleetSize; index++)
 			{
@@ -584,6 +543,12 @@
 
 		int eventIndex = 0;
 
+
+		//Drones will start knowing how far they are away from CC
+		for( int index = 0 ; index < totalFleetSize ; index++ )
+		{
+			fleet[index].setCCDistance( fleet[index].getWeight() * (index+1) );
+		}
 		//While the drones all have more than 10% of their battery.
 		while( droneAcceptableBatteryLife() )
 		{
@@ -609,6 +574,7 @@
 				{
 					//there is no right neighbor to grab
 					fleet[droneReceiving].setLeftNeighborDistance( fleet[droneReceiving-1].getWeight() );
+
 						//This is 
 								//sending a message to determine distance
 								//receiving message with the distance
