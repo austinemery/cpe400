@@ -37,7 +37,7 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones );
 			return 0;
 		}
 		int amountOfDrones = atoi(argv[1]); //Turn argv[1] back into a number
-		int simulatedEvents[1000][2] = {0};
+		int simulatedEvents[100000][2] = {0};
 				//Two cols. One for the drone it's going to, one indicating what the event was.
 				//NO NOT EDIT ONCE CREATED.
 		CCObject ComCon(amountOfDrones);
@@ -46,7 +46,7 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones );
 		{
 			populateEvents(simulatedEvents , amountOfDrones);
 
-			ComCon.proactiveSimulation( simulatedEvents );
+		//	ComCon.proactiveSimulation( simulatedEvents );
 
 			ComCon.resetSimulation( 1 );
 
@@ -69,7 +69,7 @@ void populateEvents( int simulatedEvents[][2] , int amountOfDrones )
 
 	int choice = 0;
 
-	for( int row = 0 ; row < 1000 ; row++ )
+	for( int row = 0 ; row < 100000 ; row++ )
 	{
 		if(row % 5 == 0)
 			while(choice <= (.6 * amountOfDrones) )

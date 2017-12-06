@@ -256,28 +256,28 @@
 					break;
 			case 0: // 0: A cycle has gone by, account for battery life drain
 					
-					remainingBattery -= getCCDistance() * .0001;
+					remainingBattery -= getCCDistance() * .01;
 						//Battery is drained by 1% for idle movement through air
 					break;
 			case 1: // 1: A message has been received
 					
-					remainingBattery -= package[indexOfLastPacket].getSize() * 0.001;
+					remainingBattery -= package[indexOfLastPacket].getSize() * 0.01;
 						//Every byte received takes 0.1 off the battery.
 					break;
 			case 2: // 2: A message has been sent. Messages should only be sent to the left
 					
 					if( rankInFleet == 0 ) //if we're the first drone in line, send to C&C
 					{
-						remainingBattery -= edges[1][0] * 0.001;
+						remainingBattery -= edges[1][0] * 0.01;
 					} else
 					{
-						remainingBattery -= edges[1][1] * 0.001;							
+						remainingBattery -= edges[1][1] * 0.01;							
 					}
 						//Every foot a message is sent takes 0.1 off the battery.
 					break;
 			case 3: // 3: Direct Message to C&C
 
-					remainingBattery -= edges[1][0] * 0.001;
+					remainingBattery -= edges[1][0] * 0.01;
 						//Every foot a message is sent takes 0.1 off the battery.
 					break;
 			case 4: // 4: Traded positions with counterpart
@@ -287,16 +287,16 @@
 					}
 					else if(rankInFleet < (fleetTotal/2))
 					{
-						remainingBattery -= 5 + ((fleetTotal - (rankInFleet * 2))*0.001);
+						remainingBattery -= 5 + ((fleetTotal - (rankInFleet * 2))*0.01);
 					}
 					else
 					{
-						remainingBattery -= 5 + (fleetTotal - (((fleetTotal - rankInFleet) * 2))*0.001);
+						remainingBattery -= 5 + (fleetTotal - (((fleetTotal - rankInFleet) * 2))*0.01);
 					}
 					//includes battery for data sent to swap(5%) and the distance traveled(at least 3%)	
 					break;				
 			case 5: //5: Received request message from another drone for updated information.
-					remainingBattery -= 0.005;				
+					remainingBattery -= 0.05;				
 		}
 	}
 	void DroneObject::updateEdgeDistance( const int& neighbor, const int& newDistance )
@@ -499,29 +499,60 @@
 			int droneReceiving = events[eventIndex][0];
 			PacketObject newEvent(events[eventIndex][1]);
 			fleet[droneReceiving].collectPackage(newEvent);
-			if(fleet[droneReceiving].remainingPackageSpace() <= 8)
+			
+			if( newEvent.getSize() == 4 )
 			{
-				if( fleet[droneReceiving].getRank() != 0 )
+				for( int index = droneReceiving ; index >= 0 ; index-- )
 				{
-				
-					if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
+					if( index == 0 )
 					{
-						fleet[droneReceiving].sendPackage(fleet[ fleet[droneReceiving].getLeftNeighbor() ]);
+						fleet[index].ccPackage(*this,2);
 					}
-						
-					// Update drones battery
-					fleet[droneReceiving].updateBattery(5);
-					fleet[droneReceiving].updateBattery(2);
-					fleet[droneReceiving-1].updateBattery(5);
-					fleet[droneReceiving-1].updateBattery(2);
-				} 
-				else
+					else
+					{
+						fleet[index].sendPackage(fleet[ fleet[index].getLeftNeighbor() ]);
+					}
+				}
+			} 
+			else if( fleet[droneReceiving].totalPackageSize > 4 )
+			{
+				for( int index = droneReceiving ; index >= 0 ; index-- )
 				{
-					fleet[droneReceiving].ccPackage(*this, 1); //1 for proactive, 2 for reactive
-
-					fleet[droneReceiving].updateBattery(2);
+					if( index == 0 )
+					{
+						fleet[index].ccPackage(*this,2);
+					}
+					else
+					{
+						fleet[index].sendPackage(fleet[ fleet[index].getLeftNeighbor() ]);
+					}
 				}
 			}
+
+
+			// if(fleet[droneReceiving].remainingPackageSpace() <= 8)
+			// {
+			// 	if( fleet[droneReceiving].getRank() != 0 )
+			// 	{
+				
+			// 		if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
+			// 		{
+			// 			fleet[droneReceiving].sendPackage(fleet[ fleet[droneReceiving].getLeftNeighbor() ]);
+			// 		}
+						
+			// 		// Update drones battery
+			// 		fleet[droneReceiving].updateBattery(5);
+			// 		fleet[droneReceiving].updateBattery(2);
+			// 		fleet[droneReceiving-1].updateBattery(5);
+			// 		fleet[droneReceiving-1].updateBattery(2);
+			// 	} 
+			// 	else
+			// 	{
+			// 		fleet[droneReceiving].ccPackage(*this, 1); //1 for proactive, 2 for reactive
+
+			// 		fleet[droneReceiving].updateBattery(2);
+			// 	}
+			// }
 			//else continue using buffer and no transfer battery usage
 
 
@@ -534,7 +565,7 @@
 
 
 			eventIndex++;
-			if(eventIndex == 1000)
+			if(eventIndex == 100000)
 			{
 				break;
 			}
@@ -615,33 +646,35 @@
 					fleet[droneReceiving + 1].updateBattery(2);
 				}
 
-
-			//On message get
-			//can you receive a message?
-			if(fleet[droneReceiving].remainingPackageSpace() <= 8)
+			if( newEvent.getSize() == 4 )
 			{
-				if( fleet[droneReceiving].getRank() != 0 )
+				for( int index = droneReceiving ; index >= 0 ; index-- )
 				{
-				
-					if(fleet[ fleet[droneReceiving].getLeftNeighbor() ].ableToReceivePackage( newEvent.getSize() ) )
+					if( index == 0 )
 					{
-						fleet[droneReceiving].sendPackage(fleet[ fleet[droneReceiving].getLeftNeighbor() ]);
+						fleet[index].ccPackage(*this,2);
 					}
-						
-					// Update drones battery
-					fleet[droneReceiving].updateBattery(5);
-					fleet[droneReceiving].updateBattery(2);
-					fleet[droneReceiving-1].updateBattery(5);
-					fleet[droneReceiving-1].updateBattery(2);
-				} 
-				else
+					else
+					{
+						fleet[index].sendPackage(fleet[ fleet[index].getLeftNeighbor() ]);
+					}
+				}
+			} 
+			else if( fleet[droneReceiving].totalPackageSize > 4 )
+			{
+				for( int index = droneReceiving ; index >= 0 ; index-- )
 				{
-					fleet[droneReceiving].ccPackage(*this, 2); //1 for proactive, 2 for reactive
-
-					fleet[droneReceiving].updateBattery(2);
+					if( index == 0 )
+					{
+						fleet[index].ccPackage(*this,2);
+					}
+					else
+					{
+						fleet[index].sendPackage(fleet[ fleet[index].getLeftNeighbor() ]);
+					}
 				}
 			}
-			//else continue using buffer and no transfer battery usage
+
 
 			//Update drones
 			for( int index = 0 ; index < totalFleetSize ; index++ )
@@ -650,7 +683,7 @@
 			}			
 
 			eventIndex++;
-			if(eventIndex == 1000)
+			if(eventIndex == 100000)
 			{
 				break;
 			}		
@@ -866,7 +899,7 @@
 		cout << "* ========================================== *" << endl;
 		cout << "*                                            *" << endl;
 		cout << "* Average Packets Sent: " << avgProactivePacket << endl;
-		cout << "*      Out of 1000 total packets in sim." << endl;
+		cout << "*      Out of 100000 total packets in sim." << endl;
 		cout << "* Average Min. Battery: " << avgProactiveMinValue << "%" << endl;
 		cout << "* Average Max. Battery: " << avgProactiveMaxValue << "%" << endl;
 		cout << "* Average Total Battery: " << avgProactiveAvgValue << "%" << endl;
@@ -878,7 +911,7 @@
 		cout << "* ========================================== *" << endl;
 		cout << "*                                            *" << endl;
 		cout << "* Average Packets Sent: " << avgReactivePacket << endl;
-		cout << "*      Out of 1000 total packets in sim." << endl;
+		cout << "*      Out of 100000 total packets in sim." << endl;
 		cout << "* Average Min. Battery: " << avgReactiveMinValue << "%" << endl;
 		cout << "* Average Max. Battery: " << avgReactiveMaxValue << "%" << endl;
 		cout << "* Average Total Battery: " << avgReactiveAvgValue << "%" << endl;
