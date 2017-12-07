@@ -8,4 +8,7 @@
 cd into the directory
 make 
 ./main n
+
+Where n is a number between 5 and 100.
+
 ```
