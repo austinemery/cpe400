@@ -1,4 +1,4 @@
-# CPE 400
+# CPE 400 Drone Project
 
 ## Austin Emery, Nickolas Johnson, and Mercedes Anderson
 
